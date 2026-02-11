@@ -1,12 +1,12 @@
-TravelMate
+## TravelMate
 
 React + Spring Boot 기반의 여행 일정 관리 및 장소 공유 웹 애플리케이션입니다.
 
-TravelMate는 여행 계획을 세우고, 장소를 저장하고, 친구와 공유하며,
+TravelMate는 여행 계획을 친구와 함께 세우고, 장소를 저장하고, 친구와 공유하며,
 지역별 날씨를 조회하고, 여행 일정을 PDF로 생성할 수 있는 서비스입니다.
 
-
-1. Tech Stack
+----
+1. 기술 스택
 
 Frontend
 - React
@@ -23,7 +23,8 @@ Backend
 - Thymeleaf (PDF 템플릿)
 - AWS S3
 - OAuth2 (Naver, Kakao)
-
+- WebSocket (실시간 기능)
+----
 2. 주요 기능
 
 회원 관리
@@ -66,6 +67,7 @@ Backend
 날씨 조회
 - 지역별 실시간 날씨 조회 (Weather API)
 
+---
 
 3. 실행 환경
 
@@ -84,51 +86,52 @@ REACT_APP_API_BASE= [백엔드 서버 주소]
 주의사항
 - 반드시 REACT_APP_ prefix를 사용해야 React에서 인식됩니다.
 
+---
 
 Backend (.env)
 
 프로젝트 루트 또는 backend 디렉토리에 .env 파일 생성
 
-# DB (로컬)
-DB_URL=
-DB_USERNAME=
-DB_PASSWORD=
+- DB (로컬)
+    - DB_URL=
+    - DB_USERNAME=
+    - DB_PASSWORD=
 
-# Naver OAuth
-NAVER_CLIENT_ID=
-NAVER_CLIENT_SECRET=
-NAVER_REDIRECT_URI=
-NAVER_SCOPE=
+- Naver OAuth
+  - NAVER_CLIENT_ID=
+  -  NAVER_CLIENT_SECRET=
+  - NAVER_REDIRECT_URI=
+  - NAVER_SCOPE=
 
-# Kakao OAuth
-KAKAO_CLIENT_ID=
-KAKAO_CLIENT_SECRET=
-KAKAO_REDIRECT_URI=
-KAKAO_SCOPE=
+- Kakao OAuth
+  - KAKAO_CLIENT_ID=
+  - KAKAO_CLIENT_SECRET=
+  - KAKAO_REDIRECT_URI=
+  - KAKAO_SCOPE=
 
-# JWT
-JWT_SECRET=
+- JWT
+  - JWT_SECRET=
 
-# AWS S3
-AWS_ACCESS_KEY=
-AWS_SECRET_KEY=
-AWS_REGION=
-AWS_S3_BUCKET=
+- AWS S3
+  - AWS_ACCESS_KEY=
+  - AWS_SECRET_KEY=
+  - AWS_REGION=
+  - AWS_S3_BUCKET=
 
-# MongoDB
-SPRING_DATA_MONGODB_URI=
+- MongoDB
+  - SPRING_DATA_MONGODB_URI=
 
-# API Keys
-YOUTUBE_API_KEY=
-SK_API_KEY=
-TOUR_API_KEY=
-GOOGLE_PLACES_API_KEY=
-WEATHER_API_KEY=
+- API Keys
+  - YOUTUBE_API_KEY=
+  - SK_API_KEY=
+  - TOUR_API_KEY=
+  - GOOGLE_PLACES_API_KEY=
+  - WEATHER_API_KEY=
 
-# PDF 템플릿 경로 (배포 시 사용)
-# THYMELEAF_TEMPLATE_PREFIX=
+- PDF 템플릿 경로 (배포 시 사용)
+  - THYMELEAF_TEMPLATE_PREFIX=
 
-
+---
 5. 기타
 
 - 지역별 날씨 조회 기능 지원
