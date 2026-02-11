@@ -1,0 +1,101 @@
+/* src/pages/Login.css */
+.login-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #F0F8FF;
+}
+
+.login-logo {
+    font-size: 42px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.login-logo-main {
+    color: cornflowerblue;
+}
+
+.login-logo-sub {
+    color: #2B65EC;
+}
+
+.login-container {
+    width: 360px;
+    padding: 30px;
+    text-align: center;
+    border-radius: 12px;
+    background-color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-title {
+    font-size: 22px;
+    margin-bottom: 18px;
+    font-weight: bold;
+    color: cornflowerblue;
+}
+
+.login-input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 14px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    box-sizing: border-box;
+}
+
+.login-button {
+    width: 100%;
+    padding: 14px;
+    background-color: cornflowerblue;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.login-message {
+    margin-top: 12px;
+    color: #d9534f;
+    font-weight: bold;
+}
+
+.login-oauth-container {
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.naver-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #03C75A;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 8px;
+}
+
+.kakao-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #FEE500;
+    color: #3c1e1e;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}

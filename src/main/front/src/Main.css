@@ -1,0 +1,184 @@
+.main-wrapper {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background-color: #ffffff;
+    color: #000000;
+}
+.logo {
+    font-size: 28px;
+    font-weight: bold;
+    color: cornflowerblue;
+    cursor: pointer;
+}
+
+.nav-bar button {
+    background: none;
+    border: none;
+    color: #000000;
+    font-size: 16px;
+    margin-left: 15px;
+    cursor: pointer;
+}
+
+/* Hero Intro */
+.hero-intro {
+    text-align: center;
+    padding: 80px 20px 50px;
+    background: linear-gradient(to bottom right, #dff6ff, #ffffff);
+}
+
+.hero-title {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.hero-subtitle {
+    font-size: 20px;
+    color: #666;
+}
+
+/* 인기 여행지 */
+.popular-destinations {
+    padding: 60px 20px;
+    background-color: #f9f9f9;
+    text-align: center;
+}
+
+.popular-destinations h2 {
+    font-size: 28px;
+    margin-bottom: 40px;
+}
+
+.destinations-list {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.destination-card {
+    width: 250px;
+    background-color: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.destination-card:hover {
+    transform: translateY(-5px);
+}
+
+.destination-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.destination-card p {
+    padding: 15px 10px;
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
+}
+
+/* 푸터 */
+.main-footer {
+    text-align: center;
+    padding: 30px 20px;
+    background-color: #333;
+    color: white;
+}
+
+.social-links a {
+    margin: 0 10px;
+    color: #ddd;
+    text-decoration: none;
+}
+
+.social-links a:hover {
+    color: white;
+    text-decoration: underline;
+}
+
+/* 날씨 섹션 */
+.weather-section {
+    padding: 60px 20px;
+    background-color: #eef6fa;
+    text-align: center;
+}
+
+.weather-section h2 {
+    font-size: 26px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.weather-search {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.weather-search input {
+    padding: 10px;
+    width: 250px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.weather-search button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: cornflowerblue;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.weather-search button:hover {
+    background-color: royalblue;
+}
+
+.weather-result {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.weather-card {
+    width: 200px;
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+.weather-card p {
+    margin: 8px 0;
+    font-size: 14px;
+    color: #444;
+}
+
+.error-text {
+    color: red;
+    margin-top: 10px;
+    font-weight: bold;
+}
+

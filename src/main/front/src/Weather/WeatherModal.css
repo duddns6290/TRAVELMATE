@@ -1,0 +1,75 @@
+.modal-overlay {
+    position: fixed;
+    top: 57.5px;
+    right: 10px;
+    width: auto;
+    height: auto;
+    /*background-color: transparent !important;*/
+    z-index: 9999;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    width: 850px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    opacity: 0.98;
+    backdrop-filter: blur(10px);
+}
+
+
+/* 추가 스타일 */
+.weather-section {
+    text-align: center;
+    background-color: white;
+}
+
+.weather-search input {
+    padding: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+.weather-result {
+    margin-top: 1rem;
+}
+
+.weather-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 1rem;
+}
+
+.weather-cards {
+    display: flex;
+    gap: 12px;
+}
+
+.weather-nav button {
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    font-size: 20px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.weather-nav button:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+
+.close-btn {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background: #eee;
+    border: none;
+    cursor: pointer;
+    border-radius: 0.5rem;
+}
+

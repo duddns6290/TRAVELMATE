@@ -1,0 +1,34 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>OAuth 2.0 로그인</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<a href="/oauth2/authorization/google" class="btn btn-sm btn-success active" role="button">Google Login</a><br>-->
+<!--<a href="/oauth2/authorization/naver" class="btn btn-sm btn-success active" role="button">Naver Login</a><br>-->
+<!--<a href="/oauth2/authorization/kakao" class="btn btn-third active" role="button">Kakao Login</a>-->
+
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spring Boot 연동 예제</title>
+    <script>
+        async function fetchData() {
+            const response = await fetch('/api/data');
+            const data = await response.json();
+            document.getElementById('output').innerText = JSON.stringify(data, null, 2);
+        }
+    </script>
+</head>
+<body>
+<h1>Spring Boot 백엔드와 연결된 프론트엔드</h1>
+<button onclick="fetchData()">데이터 가져오기</button>
+<pre id="output"></pre>
+</body>
+</html>

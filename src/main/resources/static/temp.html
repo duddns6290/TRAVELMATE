@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>모달 알림 예시</title>
+  <style>
+    /* 기본 스타일 */
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    h1, p {
+      margin: 16px;
+    }
+
+    /* 모달 오버레이 스타일 */
+    .modal-overlay {
+      display: none; /* 초기에는 숨김 */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5); /* 반투명 배경 */
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* 모달 컨테이너 스타일 */
+    .modal-container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 400px;
+      width: 80%;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    /* 모달 내부 버튼 스타일 */
+    .modal-container button {
+      margin: 8px;
+      padding: 8px 16px;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<h1>가게 안내</h1>
+<p>클릭하면 모달 알림창이 뜹니다.</p>
+<!-- 모달을 여는 예시 버튼 -->
+<button onclick="openModal()">알림창 열기</button>
+
+<!-- 모달 오버레이 (배경) -->
+<div id="modalOverlay" class="modal-overlay">
+  <!-- 모달 컨테이너 -->
+  <div class="modal-container">
+    <p>이 가게는 5-7시 운영시간입니다.<br>그래도 추가하시겠습니까?</p>
+    <button id="addBtn">추가</button>
+    <button id="cancelBtn">취소</button>
+  </div>
+</div>
+
+<script>
+  // 모달 열기
+  function openModal() {
+    document.getElementById('modalOverlay').style.display = 'flex';
+  }
+
+  // 모달 닫기
+  function closeModal() {
+    document.getElementById('modalOverlay').style.display = 'none';
+  }
+
+  // "추가" 버튼 클릭 시 동작
+  document.getElementById('addBtn').addEventListener('click', function() {
+    // 원하는 로직(예: 추가 기능) 실행
+    alert("추가되었습니다!");
+    closeModal();
+  });
+
+  // "취소" 버튼 클릭 시 동작
+  document.getElementById('cancelBtn').addEventListener('click', function() {
+    // 원하는 로직(예: 취소 기능) 실행
+    alert("취소되었습니다!");
+    closeModal();
+  });
+
+  // 페이지 로드 시 모달이 자동으로 뜨게 하고 싶다면, 아래 코드의 주석을 해제하세요.
+  // window.onload = function() {
+  //   openModal();
+  // };
+</script>
+</body>
+</html>
