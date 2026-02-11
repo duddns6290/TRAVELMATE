@@ -16,7 +16,7 @@ import java.io.IOException;
 public class OAuth2SuccessHandler  implements AuthenticationSuccessHandler{
 
     private final TokenProvider tokenProvider;
-    private static final String REDIRECT_URI = "http://travelmate-capstone.s3-website.eu-north-1.amazonaws.com/oauth2/redirect";
+    private static final String REDIRECT_URI = "http://localhost:3000/oauth2/redirect";
 
     @Override
         public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,

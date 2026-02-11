@@ -14,7 +14,6 @@ public class WebConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedOrigins(
-                                "http://travelmate-capstone.s3-website.eu-north-1.amazonaws.com",
                                 "http://localhost:3000"
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
