@@ -1,0 +1,368 @@
+.topBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    background-color: #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #7a86e8;
+    cursor: pointer;
+}
+
+.logoutButton {
+    font-size: 16px;
+    background-color: white;
+    color: black;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+
+.page {
+    padding: 40px 60px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.addButton {
+    background-color: #7a86e8;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.tripList {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.card {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    padding: 16px;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 20px;
+}
+
+.cardText {
+    flex-grow: 1;
+}
+
+.tripTitle {
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.detail {
+    font-size: 14px;
+    color: #666;
+}
+
+.menuButton {
+    font-size: 24px;
+    cursor: pointer;
+    position: relative;
+}
+
+.dropdownMenu {
+    position: absolute;
+    top: 36px;
+    right: 0;
+    width: 120px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-size: 14px;
+}
+
+.menuItem {
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.menuItem:hover {
+    background-color: #f5f5f5;
+}
+
+.menuItem:last-child {
+    border-bottom: none;
+}
+
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.input {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.submitButton {
+    padding: 10px;
+    background-color: #7a86e8;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.cancelButton {
+    padding: 10px;
+    background-color: #ccc;
+    color: #000;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* MyPage.css */
+.wrapper {
+    min-height: 98.4vh;
+    background-color: #f9f9f9;
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
+.topBar {
+    width: 100%;
+    padding: 20px 40px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    cursor: pointer;
+    font-size: 28px;
+    font-weight: bold;
+    color: cornflowerblue;
+}
+
+.page {
+    padding: 30px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.userGreeting {
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 30px;
+    color: #333;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.title {
+    font-size: 22px;
+    margin: 0;
+}
+
+.addButton {
+    background-color: cornflowerblue;
+    color: #fff;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.tripList {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.card {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.image {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.cardText {
+    flex-grow: 1;
+    text-align: left;
+}
+
+.tripTitle {
+    font-size: 23px;
+    font-weight: bold;
+}
+
+.detail {
+    font-size: 14px;
+    color: #666;
+    margin-top: 4px;
+}
+
+.menuButton {
+    font-size: 20px;
+    cursor: pointer;
+    color: #555;
+}
+
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.modal {
+    background-color: #fff;
+    padding: 24px;
+    border-radius: 12px;
+    width: 320px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.input {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+}
+
+.submitButton {
+    padding: 12px;
+    background-color: cornflowerblue;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.cancelButton {
+    padding: 10px;
+    background-color: #eee;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.leftPanel {
+    background-color: #f0f4ff;
+    border-radius: 10px;
+    box-sizing: border-box;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 15px 15px;
+    margin-top: 10px;
+}
+
+.rightPanel {
+    width: 70%;
+    padding: 30px 20px;
+    box-sizing: border-box;
+}
+
+.friendCard {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    font-size: 14px;
+    color: #333;
+    border: 1px solid gray;
+    display: flex;
+    gap: 60px;
+}
+
+.travelBox{
+    width: 30%;
+    margin-right: 10px;
+    padding: 30px;
+}
+.travelFriend{
+    font-size: 20px;
+    font-weight: bold;
+    margin: 3px 0 15px 5px;
+}
+

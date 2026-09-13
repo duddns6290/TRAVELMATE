@@ -1,0 +1,687 @@
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 97vh;
+}
+ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin-left: 0;
+}
+.logoutButton{
+    color: black;
+}
+
+.topBar {
+    height: 7vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: cornflowerblue;
+    font-family: 'Poppins', sans-serif;
+}
+
+.mypageButton {
+    padding: 16px;
+    background-color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 10px;
+}
+
+.content {
+    display: flex;
+    flex-grow: 1;
+}
+
+.timelinePanel {
+    height: 89vh;
+    width: 500px;
+    background-color: #e6f0fa;
+    padding: 15px 0 15px 0 ;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow-y: auto;
+}
+
+.headerRow {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.tab,
+.activeTab {
+    height: 32px;
+    line-height: 32px;
+    padding: 0 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.tab {
+    background: white;
+    color: #333;
+    border: 1px solid #ccc;
+}
+.tab:hover {
+    background: #f0f0f0;
+}
+.activeTab {
+    background: cornflowerblue;
+    color: white;
+    border: 1px solid cornflowerblue;
+}
+
+
+.editDeleteButton {
+    padding: 6px 12px;
+    margin-left: 4px;
+    background: white;
+    border: 2px solid cornflowerblue;
+    border-radius: 10px;
+    color: cornflowerblue;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.tripList {
+    height: 100%;
+    overflow-y: auto;
+    flex-grow: 1;
+    padding: 5px;
+}
+
+.insertLine {
+    border-top: 3px dashed cornflowerblue;
+    margin: 16px 0;
+    height: 8px;
+    cursor: pointer;
+}
+
+.scheduleItem {
+    height: 60px;
+    background-color: white;
+    padding: 12px;
+    padding-bottom: 20px;
+    padding-top: 20px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    cursor: pointer;
+    position: relative;
+    box-shadow: 4px 0 8px rgba(0, 0, 0, 0.05);
+}
+
+.deleteModeItem {
+    background-color: white;
+
+}
+.deleteModeItem:hover {
+    background-color: #DBDBDB;
+}
+.deleteModeItemButton{
+    background-color: red;
+    color: white;
+    border: 1px solid red;
+}
+
+.selectedItem {
+    background-color: cornflowerblue;
+    color: white;
+}
+
+
+.timeBox {
+    margin-top: 10px;
+    min-width: 60px;
+    height: 30px;
+    line-height: 30px;
+    background: #97B6ED;
+    color: white;
+    text-align: center;
+    border-radius: 20px;
+}
+
+.itemText {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.itemImage {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 10px;
+    flex-shrink: 0;
+}
+
+.itemTitle {
+    font-weight: bold;
+    color : black;
+}
+
+.addMoveTimeButton {
+    position: absolute;
+    top: 80%;
+    left: 13%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    color: cornflowerblue;
+    border: 1px solid cornflowerblue;
+    border-radius: 16px;
+    padding: 4px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.addMoveTimeButton:hover {
+    background-color: cornflowerblue;
+    color: white;
+}
+
+.verticalConnectorWrapper {
+    position: relative;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: -15px 0 0;
+}
+
+.verticalLine {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 2px;
+    background-color: #a6c4e8;
+    transform: translateX(-50%);
+    z-index: 1;
+}
+
+.moveTimeButton {
+    position: relative;
+    z-index: 2;
+    font-size: 13px;
+    font-weight: bold;
+    padding:7px;
+    border: 2px solid #97B6ED;
+    background-color: white;
+    color: #97B6ED;
+    border-radius: 20px;
+    transition: 0.2s;
+    width: 200px;
+}
+
+.moveTimeButton:hover{
+    background: cornflowerblue;
+    color: white;
+    cursor: pointer;
+}
+
+.labelRow {
+    align-items: center;
+}
+.transferText{
+    margin: 5px;
+}
+
+.verticalDivider {
+    width: 2px;
+    height: 13px;
+    background-color: #97B6ED;
+}
+
+.itemCategory {
+    font-size: 14px;
+    color: #666;
+}
+
+.memoBox {
+    position: absolute;
+    right: 10px;
+    background: #f1f1f1;
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 14px;
+    white-space: pre-wrap;
+    color: black;
+    cursor: pointer;
+}
+
+.memoAddButton {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+    background: cornflowerblue;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.plusIcon {
+    transform: translate(0.5px, -1.5px);
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+}
+
+.buttonGroup {
+    display: flex;
+    gap: 12px;
+    margin-top: 12px;
+    padding-right: 10px;
+}
+.buttonGroup .actionButton {
+    flex: 1;
+    height: 48px;
+    border: 2px solid cornflowerblue;
+    background: white;
+    border-radius: 12px;
+    color: cornflowerblue;
+    font-weight: 600;
+    font-size: 18px;
+    cursor: pointer;
+}
+.buttonGroup .actionButton:hover {
+    background: cornflowerblue;
+    color: white;
+}
+
+.mapPanel {
+    flex-grow: 1;
+    background: #ddeeff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 메모 패널 */
+.memoPanel {
+    height: 89vh;
+    width: 300px;
+    background-color: #fdfdfd;
+    border-right: 1px solid #ccc;
+    padding: 0 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 4px 0 8px rgba(0, 0, 0, 0.05);
+    z-index: 1;
+}
+
+.memoPanelHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.memoPanelHeader h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #444;
+}
+
+.memoPanelHeader button {
+    margin-left: 6px;
+    padding: 6px 12px;
+    font-size: 14px;
+    border: 1px solid #bbb;
+    border-radius: 8px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.memoPanelHeader button:hover {
+    background-color: #f2f2f2;
+}
+
+.memoGroup {
+    margin-bottom: 20px;
+    padding: 16px;
+    border-radius: 16px;
+    background: #fff8dc;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s;
+}
+.memoGroup:hover {
+    transform: translateY(-2px);
+}
+
+.memoGroup h4 {
+    margin: 0 0 10px 0;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed #bbb;
+    font-size: 16px;
+    font-weight: 700;
+    color: #5a463a;
+}
+
+.memoGroupContent ul {
+    padding-left: 0;
+    margin-bottom: 12px;
+}
+
+.imageList li,
+.linkList li,
+.textList li {
+    list-style: none;
+    background: #fffef5;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    word-break: break-all;
+    box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.03);
+    font-family: "Segoe UI", "Arial", sans-serif;
+    line-height: 1.5;
+    color: #333;
+}
+
+.memoImage {
+    max-width: 100%;
+    border-radius: 8px;
+    display: block;
+    margin: 8px auto;
+}
+
+.linkList a {
+    color: #1e88e5;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+.textList span {
+    max-width: 100%;
+    white-space: pre-wrap;
+    display: block;
+    color: #4e342e;
+}
+
+/* 모달 */
+.modalOverlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.modal {
+    background: white;
+    padding: 24px 20px;
+    border-radius: 12px;
+    width: 340px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.modal h3 {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.modal input,
+.modal select,
+.modal textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+    box-sizing: border-box;
+    resize: vertical;
+}
+
+.modal button {
+    padding: 12px;
+    background: cornflowerblue;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.modal button:hover {
+    background-color: #416ed4;
+}
+
+.modalClose {
+    margin-top: 8px;
+    padding: 10px;
+    background: #eee;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/*도보 자동차 대중교통*/
+.transportOptionsInline {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding: 0 7px 0 7px;
+}
+
+.transportButton {
+    background-color: white;
+    color: cornflowerblue;
+    border: 1px solid cornflowerblue;
+    border-radius: 16px;
+    padding: 4px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.transportButton:hover {
+    background-color: cornflowerblue;
+    color: white;
+}
+
+
+.insertLineWrapper {
+    position: relative;
+    height: 40px;
+    margin: 30px 0;
+}
+
+.guideToast {
+    margin: 10px auto 0 auto;
+    width: fit-content;
+    background: rgba(255, 255, 255, 0.95);
+    color: #333;
+    padding: 10px 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    animation: fadeInUp 0.5s ease-out;
+}
+
+.dayNavigation {
+    display: flex;
+    gap:3px;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.arrowButton {
+    font-size: 18px;
+    padding: 6px 10px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    color: #222;
+    transition: opacity 0.2s ease;
+}
+
+.arrowButton:hover:not(.disabled) {
+    color: #000;
+    font-weight: bold;
+}
+
+.arrowButton.disabled {
+    color: #ccc;
+    cursor: default;
+}
+
+.tab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #9EC2E8;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    color: black;
+    transition: background-color 0.2s ease;
+}
+
+
+.activeTab {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #1E384F;
+    color: white;
+    font-weight: bold;
+    border-radius: 10px;
+    padding: 6px 12px;
+    border: none;
+}
+
+
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.topBar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 24px;
+    background-color: #ffffff;
+    border-bottom: 1px solid #ddd;
+}
+.textMenuBar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 24px;
+    align-items: center;
+    padding: 12px 24px;
+    font-size: 15px;
+}
+
+.textMenuItem {
+    color: #333;
+    text-decoration: none;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.textMenuItem:hover {
+    color: cornflowerblue;
+    text-decoration: underline;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: cornflowerblue;
+}
+
+.topBar button {
+    margin-left: 12px;
+    padding: 8px 8px;
+    color: #000000;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.loadingOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.7);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loadingSpinner {
+    background: white;
+    padding: 20px 40px;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+.memoGroupHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.editButton {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.editButton:hover {
+    background-color: #dcdcdc;
+}
+

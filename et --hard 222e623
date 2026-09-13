@@ -1,0 +1,112 @@
+[33m014b090[m[33m ([m[1;36mHEAD[m[33m)[m 타임테이블 UI 수정, 등록할때 사진 추가....
+[33m1c8b919[m 헷
+[33m0ba2331[m Merge remote-tracking branch 'origin/master'
+[33mfa9fe9e[m jwt를 위해 아주 많은 것은 수정함....
+[33me2bc18f[m 타테 시간정렬
+[33m6b85fa4[m 등록 후 새로고침
+[33m349b871[m Merge remote-tracking branch 'origin/master'
+[33m222e623[m PDF 수정
+[33m353694f[m pdf버튼 추가
+[33mf91fbf8[m 타임테이블 일차별 등록, 일차별 동선표시, 숙소, 관광지 추가
+[33m03298f3[m 타임테이블 일차별 등록, 일차별 동선표시, 숙소, 관광지 추가
+[33m2daed71[m 로그인 css
+[33m78c9d4c[m 로그인 일반이랑 오스 모두 적용되게 수정!
+[33mbfa00b0[m mypage에 친구 목록 수정!
+[33mbbd4db6[m Merge remote-tracking branch 'origin/master'
+[33mf6470e0[m 친구목록
+[33m6dc9cb2[m 시간 업데이트 UI 수정 해야하지만 기능은 됨
+[33me276ba4[m 이동시간 업데이트! -여러번... 누르면 큰일남... ㅠㅠ
+[33m423f2e9[m 카테고리별 장소 APi, 이것저것
+[33mcd1b2de[m 카테고리별 장소 APi
+[33m55a1550[m 이동시간
+[33m30ceaa2[m 마이페이지 수정
+[33ma66066e[m Merge remote-tracking branch 'origin/master'
+[33m977e3c8[m 임시장소 삭제, 타임테이블 등록 등등
+[33m4854a8c[m Merge remote-tracking branch 'origin/master'
+[33m5334b3c[m 여행 등록, 백엔드 수정
+[33m1148fd1[m OAuth랑권한쪽 수정
+[33m7aaf163[m 동선 추가, 구조 정리
+[33m3a6f38e[m Merge remote-tracking branch 'origin/master'
+[33m7700b9a[m 일단 프론트 만드는중...
+[33m289ad62[m Merge remote-tracking branch 'origin/master'
+[33m961dd1a[m 크롤링 코드 약간 수정~
+[33mc2c0c08[m map 수정 임시장소 기능 추가
+[33m29ef02c[m UI 수정
+[33mbc53b3b[m Update Map.js
+[33m9cd948f[m Merge remote-tracking branch 'origin/master'
+[33m4cdafae[m  타임테이블 메모 패널 디자인 수정
+[33m1993f57[m 자동완성, 블로그 이미지 없앰
+[33me77a98e[m Merge remote-tracking branch 'origin/master'
+[33m5aec9d8[m place, temp 수정 lat,lon추가와 db수정에 따른 api 수정
+[33m09371f1[m Merge remote-tracking branch 'origin/master'
+[33me63b52c[m  타임테이블 디자인 수정(+버튼, DAY 표시)
+[33m948a9d5[m 자동완성 응답수정
+[33m3ac6092[m Merge remote-tracking branch 'origin/master'
+[33me8d2627[m 마이페이지 수정
+[33m0cf107b[m Merge remote-tracking branch 'origin/master'
+[33m6186123[m PDF
+[33m9f05be4[m Merge remote-tracking branch 'origin/master'
+[33mae4457c[m 타임테이블 수정 기능 추가
+[33m6fdf112[m 로고 수정
+[33ma989b4f[m map 관련 기능 업데이트
+[33m230426f[m Merge remote-tracking branch 'origin/master'
+[33m71a6787[m 서버 임시 배포!
+[33m77950d1[m Merge remote-tracking branch 'origin/master'
+[33mc7d3bd1[m 마이페이지에 여행등록 옮김. 타임테이블 수정 기능 추가해야함.
+[33m86577de[m Merge remote-tracking branch 'origin/master'
+[33m1b994d2[m 웹소켓, 이동시간, 로그인시 메인페이지 수정 (어느정도 수정 필요)
+[33m598f7ee[m Merge remote-tracking branch 'origin/master'
+[33m1daf7bd[m memo 수정
+[33me76de16[m Merge remote-tracking branch 'origin/master'
+[33m9b6cfc7[m 타임테이블 지도, 이동시간 제외 틀 만들어둠
+[33mb04a077[m Merge remote-tracking branch 'origin/master'
+[33m6f7e88c[m youtube properties
+[33m87ba588[m import 경로 이슈
+[33m1fa563b[m 사용자별 여행 조회, 로그인 수정
+[33m9f7de8f[m Merge remote-tracking branch 'origin/master'
+[33m20bdac6[m 사진 추가 여행
+[33mcc8bd64[m Merge remote-tracking branch 'origin/master'
+[33m099a8e8[m 마이페이지 연결중. 타임테이블 추가중
+[33m330810f[m Place merge 수정본!
+[33mabc469f[m Merge remote-tracking branch 'origin/master'
+[33m4357400[m 검색, 카테고리별 검색, 임시보관소, 타임테이블, 장소
+[33ma68f7a3[m youtube,memo,place_time
+[33maaff03f[m 스웨거 문서에 필요한 config
+[33m5131d57[m 몽고DB 가게정보, 리뷰, 블로그 조회 코드
+[33m6107be8[m 권한 CRUD 추가, 기본적은 몽고DB
+[33m8a7b075[m Merge remote-tracking branch 'origin/master'
+[33m403d5aa[m package이름 수정, Travel CRUD 추가
+[33mab53484[m Merge remote-tracking branch 'origin/master'
+[33ma179e06[m 마이페이지 수정함
+[33m3460d7f[m SWagger
+[33me3f92b3[m jwt 권한
+[33m5d3b065[m 마이페이지 만듦
+[33mb2b9f74[m .gitignore 설정
+[33mb65bb64[m 여행등록, 메인화면 추가
+[33mb444cb4[m 여행등록, 메인화면 추가
+[33m6f57942[m 여행등록, 메인화면 추가
+[33mbd6dc4c[m[33m ([m[1;31morigin/front[m[33m)[m 로그인기능(기존 + oauth) 합치기 2 - 프론트, 백2
+[33ma705fc7[m 로그인기능(기존 + oauth) 합치기 2 - 프론트, 백
+[33m2b168ae[m 로그인기능(기존 + oauth) 합치기 -프론트
+[33m1121665[m 코드정리! - 백엔드
+[33m5b4ca80[m JWT 완성 - back(권한 부여 부분 다시 조정) + front 임시 코드
+[33me4fc255[m jwt test
+[33m3f8cabe[m Oauth 완성 - back
+[33mc26a93c[m Oauth 테스트 코드3
+[33m0330333[m Oauth 테스트 코드3
+[33m03527b4[m Oauth 테스트 코드2
+[33m7ae1bb5[m Oauth 테스트 코드1
+[33m3f0ea32[m Oauth 테스트 코드
+[33mf58b2dd[m Merge remote-tracking branch 'origin/master'
+[33mf657a35[m wwww
+[33me7ab53c[m main.js 누락된 거 커밋
+[33m3de9409[m 로그인 화면 수정. 로그인 시 메인화면(임시)과 연결됨
+[33mb6a28be[m CORS
+[33m12a1e35[m login success
+[33m85eb6d2[m 로그인 파일 추가
+[33m6a23a01[m Merge remote-tracking branch 'origin/master'
+[33m7a8d682[m 일단 화면은 띄움
+[33m1c7157e[m 일단 화면은 띄움
+[33m454beb1[m login - back
+[33m793099a[m 서버 동기화
+[33m89f70ce[m base

@@ -1,0 +1,218 @@
+.map-board {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 600px;
+}
+
+.map-container {
+    width: 100%;
+    height: 100%;
+    min-height: 600px;
+    position: relative;
+}
+
+.map-overlay {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    right: 16px;
+    z-index: 1000;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.autocomplete-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-top: none;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 999;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.autocomplete-list li {
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.autocomplete-list li:hover {
+    background-color: #f0f0f0;
+}
+
+
+.search-box {
+    display: flex;
+    margin-bottom: 8px;
+}
+
+.search-input {
+    padding: 8px;
+    font-size: 14px;
+    flex: 1;
+    border-radius: 8px;
+    border: 1px solid cornflowerblue;
+}
+
+
+.button{
+    padding: 6px 12px;
+    background: white;
+    border: 2px solid cornflowerblue;
+    border-radius: 20px;
+    color: cornflowerblue;
+    font-weight: 600;
+    cursor: pointer;
+    margin-left: -5px;
+}
+.search-clear {
+    padding: 6px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: white;
+    border: 2px solid cornflowerblue;
+    white-space: nowrap;
+    height: 35px;
+    border-radius: 8px;
+    margin-left: 5px;
+    color: cornflowerblue;
+    text-align: center;
+    font-weight: 600;
+
+}
+
+.map-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.map-btn {
+    padding: 6px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.map-btn:hover {
+    background-color: #e0e0e0;
+}
+
+.menu-container {
+        position: absolute;
+        bottom: 16px;
+        right: 16px;
+        z-index: 9999; /* 아주 높게 */
+        pointer-events: auto;
+}
+.menu-popup div {
+    cursor: pointer;
+    padding: 10px 16px;
+    user-select: none;
+}
+
+
+.menu-button {
+    padding: 10px 16px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+
+.menu-popup {
+    position: absolute;
+    bottom: 56px;
+    right: 0;
+    width: 192px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.menu-popup-item {
+    padding: 10px 16px;
+    cursor: pointer;
+}
+
+.menu-popup-item:hover {
+    background-color: #f0f0f0;
+}
+.info-window {
+    padding: 8px;
+    font-family: 'Pretendard', sans-serif;
+    font-size: 13px;
+    line-height: 1.4;
+    max-width: 220px;
+}
+
+.info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.info-title {
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+}
+
+.scrap-btn {
+    border: none;
+    background: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #f4c542;
+    padding: 0;
+}
+
+.info-address {
+    margin-bottom: 8px;
+    color: #666;
+    font-size: 12px;
+}
+
+.info-buttons {
+    display: flex;
+    gap: 6px;
+}
+
+.info-buttons button {
+    padding: 4px 8px;
+    border: none;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.register-btn {
+    background-color: #4A90E2;
+    color: white;
+}
+
+.detail-btn {
+    background-color: #E2E2E2;
+    color: #333;
+}
+.scrap-btn {
+    border: none;
+    background: none;
+    font-size: 16px;
+    cursor: pointer;
+    color: #f4c542;
+    padding: 0;
+}
