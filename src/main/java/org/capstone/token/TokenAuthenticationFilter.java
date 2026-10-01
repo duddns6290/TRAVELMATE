@@ -28,11 +28,16 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         String token = tokenProvider.resolveToken(request);
 
         if (token != null && tokenProvider.validateToken(token)) {
-            UsernamePasswordAuthenticationToken authentication =
-                (UsernamePasswordAuthenticationToken) tokenProvider.getAuthentication(token);
+            try {
+                UsernamePasswordAuthenticationToken authentication =
+                    (UsernamePasswordAuthenticationToken) tokenProvider.getAuthentication(token);
 
-            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            } catch (IllegalArgumentException e) {
+                // 인증에 쓸 수 없는 토큰이면 인증 없이 진행한다.
+                SecurityContextHolder.clearContext();
+            }
         }
 
 

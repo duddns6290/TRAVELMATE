@@ -36,6 +36,8 @@ public class TokenProvider {
 
     private Key key;
     private static final String KEY_ROLE = "role";
+    private static final String KEY_TOKEN_TYPE = "tokenType";
+    private static final String TOKEN_TYPE_ACCESS = "access";
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30L; // 30분
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60L * 24 * 7; // 7일
     private final long EXPIRATION_TIME = 1000 * 60 * 60;
@@ -71,6 +73,7 @@ public class TokenProvider {
         return Jwts.builder()
                 .setSubject(userid)       // 사용자 식별자 (userId)
                 .claim(KEY_ROLE, role)           // 사용자 권한 정보 저장
+                .claim(KEY_TOKEN_TYPE, TOKEN_TYPE_ACCESS) // ACCESS 토큰 표시 (getAuthentication()에서 확인)
                 .setIssuedAt(now)                           // 발급시간
                 .setExpiration(expiry)                      // 만료시간
                 .signWith(key, SignatureAlgorithm.HS256)    // 서명
@@ -82,13 +85,13 @@ public class TokenProvider {
     public Authentication getAuthentication(String token) {
         Claims claims = parseClaims(token);
 
-        // 👇 추가: 인증 토큰이 아니면 예외 던지기
-        Object tokenType = claims.get("tokenType");
-        if (tokenType == null || !"access".equals(tokenType.toString())) {
+        //인증 토큰이 아니면 예외 던지기 (tokenType이 없는 기존 토큰은 access로 간주)
+        Object tokenType = claims.get(KEY_TOKEN_TYPE);
+        if (tokenType != null && !TOKEN_TYPE_ACCESS.equals(tokenType.toString())) {
             throw new IllegalArgumentException("This token is not an access token.");
         }
 
-        // 👇 추가: role null 방지
+        // role null 방지
         Object roleObj = claims.get(KEY_ROLE);
         String rawRole = roleObj != null ? roleObj.toString() : "ROLE_USER";
 
@@ -137,6 +140,7 @@ public class TokenProvider {
         Claims claims = Jwts.claims().setSubject(userId);
         claims.put("travelId", travelId);
         claims.put("role", role);
+        claims.put(KEY_TOKEN_TYPE, TOKEN_TYPE_ACCESS);
 
         return Jwts.builder()
                 .setClaims(claims)
