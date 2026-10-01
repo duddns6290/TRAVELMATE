@@ -7,6 +7,7 @@ const ShareSettings = ({ travelId, onClose }) => {
     const [emailInput, setEmailInput] = useState("");
     const [newUserInfo, setNewUserInfo] = useState(null);
     const [editedRoles, setEditedRoles] = useState({});
+    const [loadError, setLoadError] = useState(false);
 
     const loggedInUserId = sessionStorage.getItem("userId");
 
@@ -31,8 +32,10 @@ const ShareSettings = ({ travelId, onClose }) => {
             .then(res => {
                 console.log("✅ 참여자 목록 raw:", res.data);
                 setUsers(res.data);
+                setLoadError(false);
             })
             .catch(err => {
+                setLoadError(true);
                 console.error("❌ 참여자 목록 불러오기 실패:", err);
             });
     }, [travelId]);
@@ -134,7 +137,7 @@ const ShareSettings = ({ travelId, onClose }) => {
                         {users.map(user => (
                             <li key={user.userId} style={{display: "flex", alignItems: "center", marginBottom: "8px"}}>
       <span style={{flex: "1"}}>
-        {user.name} ({user.email}) -{" "}
+        {user.name || user.userId}{user.email ? ` (${user.email})` : ""} -{" "}
       </span>
 
                                 {isHost && user.userId !== loggedInUserId ? (
@@ -184,6 +187,8 @@ const ShareSettings = ({ travelId, onClose }) => {
                             </li>
                         ))}
                     </ul>
+                    {loadError && <p style={{color: "red"}}>참여자 목록을 불러오지 못했습니다.</p>}
+                    {!loadError && users.length === 0 && <p>참여자가 없습니다.</p>}
 
                 </div>
 
