@@ -11,71 +11,27 @@ const useMoveTime = ({ schedule, setSchedule, selectedDay, setIsLoadingRoute, ap
         try {
             setIsLoadingRoute(true);
 
-            let estimatedTime = "";
-            let routeUrl = "";
-
-            // ✅ 자동차인 경우 Tmap API 호출
-            if (type.includes("자동차")) {
-                console.log("tmap")
-                const res = await fetch("https://apis.openapi.sk.com/tmap/routes?version=1&format=json", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "appKey": "oRcR9euVixaMbNI65AKxx3VaEI9DUICP6wwe08Zo"
-                    },
-                    body: JSON.stringify({
-                        startX: from.longitude.toString(),
-                        startY: from.latitude.toString(),
-                        endX: to.longitude.toString(),
-                        endY: to.latitude.toString(),
-                        reqCoordType: "WGS84GEO",
-                        resCoordType: "WGS84GEO",
-                        startName: from.name,
-                        endName: to.name
-                    })
-                });
-
-                const data = await res.json();
-                const duration = data.features?.[0]?.properties?.totalTime;
-                const distance = data.features?.[0]?.properties?.totalDistance;
-
-                if (!duration) throw new Error("Tmap 응답 없음");
-
-                estimatedTime = `${Math.ceil(duration / 60)}분 / ${(distance / 1000).toFixed(1)}km`;
-
-                const urlRes = await axios.get("http://localhost:8080/api/route/v2", {
-                    params: {
-                        fromName: from.name,
-                        fromLat: from.latitude,
-                        fromLon: from.longitude,
-                        toName: to.name,
-                        toLat: to.latitude,
-                        toLon: to.longitude,
-                        mode: "car"
-                    }
-                });
-                routeUrl = urlRes.data.url;
-            } else {
-                // 🚶 도보/대중교통은 기존 API 사용
-                const res = await axios.get("http://localhost:8080/api/route/v2", {
-                    params: {
-                        fromName: from.name,
-                        fromLat: from.latitude,
-                        fromLon: from.longitude,
-                        toName: to.name,
-                        toLat: to.latitude,
-                        toLon: to.longitude,
-                        mode: type.includes("도보") ? "walk" : "transmit"
-                    }
-                });
-
-                if (res.data.estimatedTime.includes("크롤링 실패") || res.data.estimatedTime.includes("예외") ) {
-                    alert("🚨 크롤링에 실패했습니다. 다시 시도해주세요.");
-                    return;
+            // 🚗 자동차 / 🚶 도보 / 🚌 대중교통 모두 백엔드에서 계산
+            const mode = type.includes("자동차") ? "car" : type.includes("도보") ? "walk" : "transmit";
+            const res = await axios.get("http://localhost:8080/api/route/v2", {
+                params: {
+                    fromName: from.name,
+                    fromLat: from.latitude,
+                    fromLon: from.longitude,
+                    toName: to.name,
+                    toLat: to.latitude,
+                    toLon: to.longitude,
+                    mode
                 }
+            });
 
-                estimatedTime = res.data.estimatedTime;
-                routeUrl = res.data.url;
+            const estimatedTime = res.data.estimatedTime;
+            const routeUrl = res.data.url;
+
+            if (!estimatedTime || estimatedTime.includes("실패") || estimatedTime.includes("예외")) {
+                console.error("이동시간 조회 실패:", estimatedTime);
+                alert("🚨 이동시간을 가져오지 못했습니다. 잠시 후 다시 시도해주세요.");
+                return;
             }
 
             const [timeStr, distanceStr] = estimatedTime.split("/");
