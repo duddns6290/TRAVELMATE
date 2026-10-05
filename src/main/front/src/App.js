@@ -4,7 +4,6 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from "react-route
 import Main from "./Main";
 import MyPage from "./MyPage/MyPage";
 import Timetable from "./timetable/Timetable";
-import PlaceDetail from "./PlaceDetail";
 import OAuthCallback from "./OAuthCallback";
 import { UserProvider } from "./UserContext";
 import Tempdetail from "./Temp/Tempdetail";
@@ -28,7 +27,6 @@ function App() {
                     <Route path="/timetable/:travelId" element={<Timetable />} />
                     <Route path="/tempplace/:id" element={<Tempdetail />} />
                     <Route path="/timetable/:travelId/:period" element={<Timetable />} />
-                    <Route path="/place/:id" element={<PlaceDetail />} />
                     <Route path="/oauth2/redirect" element={<OAuthCallback />} />
                 <Route path="/tempplace/:id" element={<Tempdetail />} />
                 </Routes>

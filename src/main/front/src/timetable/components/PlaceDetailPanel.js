@@ -71,7 +71,7 @@ const ReviewCard = ({ review, onPhotoClick }) => {
     );
 };
 
-// 타임라인 옆으로 열리는 장소 상세 패널 (기존 /place/:id 페이지와 같은 API 사용)
+// 타임라인 옆으로 열리는 장소 상세 패널
 const PlaceDetailPanel = ({ placeId, onClose }) => {
     const [tab, setTab] = useState("info");
     const [place, setPlace] = useState(null);
