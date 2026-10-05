@@ -29,7 +29,8 @@ public class MoveTime {
     @Column(name = "mvn_departure_place")
     private Integer departurePlace;
 
-    @Column(name = "url")
+    // 네이버 길찾기 URL은 장소 이름이 인코딩돼 255자를 넘기 쉬워서 TEXT로 둔다
+    @Column(name = "url", columnDefinition = "TEXT")
     private String url;
 }
 
