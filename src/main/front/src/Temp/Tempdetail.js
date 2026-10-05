@@ -40,7 +40,10 @@ const Tempdetail = () => {
     const handleDelete = () => {
         if (!window.confirm("정말 삭제하시겠습니까?")) return;
 
-        axios.delete(`/tempplace/${id}`)
+        const token = localStorage.getItem("accessToken");
+        let userId = null;
+        try { userId = token ? JSON.parse(atob(token.split(".")[1])).sub : null; } catch (e) { /* 토큰 없음 */ }
+        axios.delete(`/tempplace/${id}`, { params: { userId } })
             .then(() => {
                 alert("삭제되었습니다.");
                 window.history.back();

@@ -1,106 +1,352 @@
-.temp-modal-overlay {
+/* ===== 스크랩한 장소: 오른쪽에서 열리는 패널 ===== */
+.scrap-panel {
     position: fixed;
-    top: 57.5px;
-    right: 10px;
-    z-index: 9999;
-}
-
-.temp-modal-content {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 0.5rem;
-    width: 1000px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-.place-nav {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    margin-top: 1rem;
-}
-
-.place-cards {
-    display: flex;
-    gap: 12px;
-}
-
-.place-card {
-    background: white;
-    border-radius: 0.5rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    padding: 1rem;
-    width: 240px;
-    flex-shrink: 0;
-    min-height: 200px;
-}
-
-.place-card img {
-    width: 100%;
-    height: 120px;
-    object-fit: cover;
-    border-radius: 0.5rem;
-    margin-top: 0.5rem;
-}
-
-.place-nav button {
-    background: #fff;
-    border: 1px solid #ccc;
-    padding: 8px 12px;
-    font-size: 20px;
-    font-weight: bold;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.place-nav button:disabled {
-    opacity: 0.4;
-    cursor: default;
-}
-
-.close-btn {
-    margin-top: 1.5rem;
-    padding: 0.5rem 1rem;
-    background: #eee;
-    border: none;
-    cursor: pointer;
-    border-radius: 0.5rem;
-}
-.tmpmemo-btn {
-    display: inline-block;
-    margin-top: 8px;
-    padding: 6px 12px;
-    font-size: 8px;
-    font-weight: bold;
-    background-color: #4A90E2;
-    color: #000000;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    white-space: nowrap;
-    text-align: center;
-}
-
-
-.memo-modal {
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-color: rgba(0,0,0,0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    top: calc(7vh + 12px); /* 지도 영역을 못 찾았을 때의 기본값: 상단바(7vh) 아래 */
+    right: 12px;
+    bottom: 12px;
+    width: 380px;
+    max-width: calc(100vw - 24px);
     z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    background: #f7f9fd;
+    border-radius: 16px;
+    box-shadow: 0 12px 40px rgba(30, 50, 90, 0.22);
+    overflow: hidden;
+    animation: scrapSlideIn 0.22s ease-out;
+    font-family: 'Pretendard', sans-serif;
 }
 
-.memo-modal-content {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    width: 320px;
-    box-sizing: border-box;
+@keyframes scrapSlideIn {
+    from { opacity: 0; transform: translateX(24px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+.scrap-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 16px 12px 20px;
+    background: #fff;
+    border-bottom: 1px solid #e8edf6;
+}
+
+.scrap-header h2 {
+    display: inline;
+    margin: 0;
+    font-size: 17px;
+    color: #1f2a44;
+}
+
+.scrap-count {
+    margin-left: 8px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: #eaf0fd;
+    color: #4a78d6;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.scrap-close {
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: #9aa3b5;
+    font-size: 22px;
+    line-height: 30px;
+    cursor: pointer;
+}
+
+.scrap-close:hover {
+    background: #f1f3f8;
+    color: #1f2a44;
+}
+
+.scrap-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
+
+.scrap-empty {
+    margin: auto;
+    padding: 40px 20px;
+    text-align: center;
+    color: #9aa5b8;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.scrap-empty-icon {
+    font-size: 34px;
+    color: #f4b400;
+    margin-bottom: 6px;
+}
+
+/* 카드 */
+.scrap-card {
+    padding: 12px;
+    background: #fff;
+    border: 1px solid #e8edf6;
+    border-radius: 14px;
+    transition: box-shadow 0.15s;
+}
+
+.scrap-card:hover {
+    box-shadow: 0 6px 16px rgba(30, 50, 90, 0.08);
+}
+
+.scrap-card-main {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.scrap-thumb {
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    object-fit: cover;
+    background: #eef2fa;
+}
+
+.scrap-thumb-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.scrap-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.scrap-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1f2a44;
+    line-height: 1.35;
+    word-break: keep-all;
+}
+
+.scrap-address {
+    margin-top: 3px;
+    font-size: 12px;
+    color: #8a93a8;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.scrap-delete {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: #c2c8d4;
+    font-size: 18px;
+    line-height: 24px;
+    cursor: pointer;
+}
+
+.scrap-delete:hover {
+    background: #fdeeee;
+    color: #e05252;
+}
+
+/* 메모 */
+.scrap-memos {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 10px;
+}
+
+.scrap-memo {
+    padding: 6px 10px;
+    border-left: 3px solid #f2c14e;
+    border-radius: 6px;
+    background: #fff8e6;
+    color: #5a4a1e;
+    font-size: 12px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+}
+
+.scrap-memo-form {
+    margin-top: 10px;
+    padding: 8px 10px;
+    border: 1px dashed #f2c14e;
+    border-radius: 8px;
+    background: #fffcf3;
+}
+
+.scrap-memo-form textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: none;
+    background: transparent;
+    font-size: 13px;
+    font-family: inherit;
+    resize: vertical;
+    outline: none;
+}
+
+.scrap-memo-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+/* 버튼 */
+.scrap-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 12px;
+}
+
+.scrap-btn-primary,
+.scrap-btn-ghost {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+
+.scrap-btn-primary {
+    flex: 1;
+    border: none;
+    background: cornflowerblue;
+    color: #fff;
+}
+
+.scrap-btn-primary:hover:not(:disabled) {
+    background: #4a78d6;
+}
+
+.scrap-btn-primary.is-done {
+    background: #e7f6ee;
+    color: #2e9e64;
+    cursor: default;
+}
+
+.scrap-btn-primary:disabled:not(.is-done) {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.scrap-btn-ghost {
+    border: 1px solid #dbe4f7;
+    background: #fff;
+    color: #4a78d6;
+}
+
+.scrap-btn-ghost:hover {
+    background: #f2f6ff;
+}
+
+.scrap-btn-small {
+    padding: 4px 12px;
+    border: none;
+    border-radius: 6px;
+    background: #f2c14e;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.scrap-btn-small:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.scrap-btn-text {
+    padding: 4px 8px;
+    border: none;
+    background: none;
+    color: #9aa5b8;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+/* 사람별 탭 */
+.scrap-tabs {
+    display: flex;
+    gap: 6px;
+    padding: 10px 14px;
+    overflow-x: auto;
+    background: #fff;
+    border-bottom: 1px solid #e8edf6;
+}
+
+.scrap-tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    padding: 5px 12px;
+    border: 1.5px solid;
+    border-radius: 16px;
+    background: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s, color 0.15s;
+}
+
+.scrap-tab.is-active {
+    color: #fff;
+}
+
+.scrap-tab-count {
+    padding: 0 6px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.08);
+    font-size: 11px;
+    line-height: 16px;
+}
+
+.scrap-tab.is-active .scrap-tab-count {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.scrap-memo-author {
+    display: block;
+    margin-bottom: 1px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.scrap-memo-author {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.scrap-memo-delete {
+    padding: 0 4px;
+    border: none;
+    background: none;
+    color: inherit;
+    font-size: 14px;
+    line-height: 1;
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+.scrap-memo-delete:hover {
+    opacity: 1;
 }
