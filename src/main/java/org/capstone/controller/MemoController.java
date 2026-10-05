@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.capstone.entity.Memo;
 import org.capstone.service.MemoService;
 import org.capstone.service.S3FileUploadService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +27,11 @@ public class MemoController {
     ) {
         memo.setPlaceId(placeId);
 
+        if (memoService.hasMemo(placeId, memo.getUserId())) {
+            // 한 장소에 사용자당 메모는 1개만 작성 가능
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+
         if (imageFile != null && !imageFile.isEmpty()) {
             try {
                 String imageUrl = s3FileUploadService.uploadFile(
@@ -46,6 +52,9 @@ public class MemoController {
     @PostMapping("/temp/{tempId}/memo")
     public ResponseEntity<Memo> createByTempId(@PathVariable int tempId, @RequestBody Memo memo) {
         memo.setTempId(tempId);
+        if (memoService.hasTempMemo(tempId, memo.getUserId())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
         return ResponseEntity.ok(memoService.createMemo(memo));
     }
 
@@ -55,12 +64,26 @@ public class MemoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Memo> update(@PathVariable int id, @RequestBody Memo memo) {
+    public ResponseEntity<Memo> update(
+            @PathVariable int id,
+            @RequestBody Memo memo,
+            @RequestParam(required = false) String userId) {
+        Memo existing = memoService.getMemo(id);
+        if (existing == null) return ResponseEntity.notFound().build();
+        // 본인이 작성한 메모만 수정 가능
+        if (existing.getUserId() == null || !existing.getUserId().equals(userId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         return ResponseEntity.ok(memoService.updateMemo(id, memo));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable int id) {
+    public ResponseEntity<Void> delete(@PathVariable int id, @RequestParam(required = false) String userId) {
+        // 본인이 작성한 메모만 삭제 가능
+        Memo existing = memoService.getMemo(id);
+        if (existing != null && existing.getUserId() != null && !existing.getUserId().equals(userId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         memoService.deleteMemo(id);
         return ResponseEntity.noContent().build();
     }

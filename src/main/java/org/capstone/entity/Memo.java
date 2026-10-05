@@ -21,4 +21,7 @@ public class Memo {
 
     private Integer placeId;
     private Integer tempId;
+
+    // 작성자 (메모를 사용자별로 구분하는 데 사용)
+    private String userId;
 }
