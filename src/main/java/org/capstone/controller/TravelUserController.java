@@ -103,6 +103,10 @@ public class TravelUserController {
             case "PLACE_TIME_UPDATE":
             case "PLACE_MOVETIME_UPDATE":
             case "MEMO_UPDATE":
+            case "SCRAP_ADD":
+            case "SCRAP_DELETE":
+            case "MAP_PLACE_OPEN":
+            case "MAP_PLACE_CLOSE":
                 // 실제 데이터 반영은 이미 REST 호출로 끝난 뒤 오는 알림이므로 그대로 브로드캐스트만 한다.
                 break;
             case "PLACE_UPDATE":
