@@ -1,34 +1,16 @@
 /* global naver */
 
-export const drawRouteByDay = (map, places, selectedDay, markersRef, polylinesRef, color = '#368cb7') => {
-    if (!map || !places || places.length === 0 || !selectedDay) return;
+// 타임테이블 패널과 같은 schedule 상태(이미 순서대로 정렬된 하루치 장소 배열)로 경로와 번호 마커를 그린다.
+// 지도가 DB를 따로 조회하면 패널과 순서/시점이 어긋나므로 반드시 schedule을 그대로 받는다.
+export const drawRouteByDay = (map, dayItems, selectedDay, markersRef, polylinesRef, color = '#368cb7') => {
+    if (!map || !dayItems || dayItems.length === 0) return;
 
-    const dayPlaces = places.filter(p => p.selected_day === selectedDay);
-    if (dayPlaces.length === 0) return;
-
-    // ✅ next_place_id 순서로 정렬
-    const idToPlaceMap = {};
-    const nextIdSet = new Set();
-    dayPlaces.forEach(p => {
-        idToPlaceMap[p.place_id] = p;
-        if (p.next_place_id !== null) nextIdSet.add(p.next_place_id);
-    });
-
-    const start = dayPlaces.find(p => !nextIdSet.has(p.place_id));
-    if (!start) return;
-
-    const sorted = [];
-    let current = start;
-    while (current) {
-        sorted.push(current);
-        current = current.next_place_id ? idToPlaceMap[current.next_place_id] : null;
-    }
-
-    const path = sorted.map((p) => new naver.maps.LatLng(p.latitude, p.longitude));
+    const valid = dayItems.filter(p => p.latitude != null && p.longitude != null);
+    if (valid.length === 0) return;
 
     const polyline = new naver.maps.Polyline({
         map: map,
-        path: path,
+        path: valid.map((p) => new naver.maps.LatLng(p.latitude, p.longitude)),
         strokeColor: color,
         strokeWeight: 4,
         strokeOpacity: 0.8,
@@ -36,7 +18,7 @@ export const drawRouteByDay = (map, places, selectedDay, markersRef, polylinesRe
     });
     polylinesRef.current.push(polyline);
 
-    sorted.forEach((p, i) => {
+    valid.forEach((p, i) => {
         const markerContent = `
             <div style="
                 background-color: #4A90E2;
@@ -63,7 +45,7 @@ export const drawRouteByDay = (map, places, selectedDay, markersRef, polylinesRe
                 content: markerContent,
                 anchor: new naver.maps.Point(14, 14),
             },
-            title: `${selectedDay}일차 - ${p.place_name}`,
+            title: `${selectedDay}일차 - ${p.name}`,
         });
         markersRef.current.push(marker);
     });
