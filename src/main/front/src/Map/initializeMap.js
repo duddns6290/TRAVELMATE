@@ -8,11 +8,11 @@ const initializeMap = async ({ mapRef, markerRef, markersRef, infoWindowRef, set
 
         if (!travelId) {
             alert("여행 ID가 설정되지 않았습니다.");
-            return;
+            return false;
         }
 
         try {
-            // 1. 새 장소 등록
+            // 새 장소 등록 (서버가 그날 순서의 맨 뒤에 붙여 저장)
             const payload = {
                 place_id: 0,
                 place_name: name,
@@ -59,36 +59,18 @@ const initializeMap = async ({ mapRef, markerRef, markersRef, infoWindowRef, set
                 showMemoPanel: false
             };
 
-            // 2. 기존 마지막 장소의 next_place_id 업데이트
-            const allPlaces = await axios.get(`/place/travel/${travelId}`);
-            const dayPlaces = allPlaces.data.filter(p =>
-                p.selected_day === parseInt(selectedDay, 10)
-                && p.place_id !== createdPlaceId
-            );
-
-            const lastPlace = dayPlaces.find(p => p.next_place_id === null);
-            if (lastPlace) {
-                const updatePayload = {
-                    ...lastPlace,
-                    next_place_id: createdPlaceId,
-                    place_visiting_time: "00:00:00"
-                };
-
-                console.log("🔼 PUT /place/" + lastPlace.place_id);
-                console.log("📦 updatePayload:", updatePayload);
-
-                await axios.put(`/place/${lastPlace.place_id}`, updatePayload);
-                console.log(`✅ next_place_id 업데이트 완료: ${lastPlace.place_id} → ${createdPlaceId}`);
-            }
+            // 맨 뒤에 이어 붙이는 연결(next_place_id)은 서버가 일차 잠금 안에서 처리한다 (PlaceOrderService.append).
+            // 예전처럼 클라이언트가 "마지막 장소"를 찾아 PUT하면, 두 사람이 동시에 등록할 때 연결이 덮어써졌다.
 
             window.applyAndBroadcast?.("PLACE_ADD", createdPlaceId, { selectedDay: day, item });
 
-            alert("타임테이블에 등록되었습니다.");
             window.dispatchEvent(new Event("refresh-timetable"));
+            return createdPlaceId; // 성공: 새 장소 id (스크랩 → 타임테이블 이동 시 메모 이관에 사용)
 
         } catch (err) {
             console.error("❌ 타임테이블 등록 실패:", err.response?.data || err);
             alert("등록 중 오류가 발생했습니다.");
+            return false;
         }
     };
 
