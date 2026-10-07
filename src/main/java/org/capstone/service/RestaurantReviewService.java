@@ -13,7 +13,10 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.data.geo.*;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -60,6 +63,45 @@ public class RestaurantReviewService {
                 .stream()
                 .map(GeoResult::getContent)
                 .collect(Collectors.toList());
+    }
+
+    // 지도 검색창: 이름에 keyword가 들어간 가게를 (lat, lon)에서 가까운 순으로. 주변(radiusKm)에 없으면 전국에서 찾는다.
+    public List<Map<String, Object>> searchNearby(String keyword, double lat, double lon, int limit, double radiusKm) {
+        Criteria byName = Criteria.where("title")
+                .regex(Pattern.compile(Pattern.quote(keyword.trim()), Pattern.CASE_INSENSITIVE));
+
+        NearQuery near = NearQuery.near(new Point(lon, lat))
+                .spherical(true)
+                .inKilometers()
+                .maxDistance(new Distance(radiusKm, Metrics.KILOMETERS))
+                .query(Query.query(byName))
+                .limit(limit);
+
+        List<Map<String, Object>> results = mongoTemplate.geoNear(near, RestaurantReview.class, "restaurant_reviews")
+                .getContent().stream()
+                .map(r -> toSearchResult(r.getContent(), r.getDistance().getValue()))
+                .collect(Collectors.toList());
+
+        if (results.isEmpty()) {
+            Query anywhere = Query.query(byName).limit(limit);
+            results = mongoTemplate.find(anywhere, RestaurantReview.class, "restaurant_reviews").stream()
+                    .map(r -> toSearchResult(r, null))
+                    .collect(Collectors.toList());
+        }
+        return results;
+    }
+
+    private Map<String, Object> toSearchResult(RestaurantReview r, Double distanceKm) {
+        Map<String, Object> m = new LinkedHashMap<>();
+        m.put("id", r.getId());
+        m.put("title", r.getTitle());
+        m.put("address", r.getAddress());
+        m.put("titleImg", r.getTitleImg());
+        m.put("category", r.getCategory());
+        m.put("lat", r.getLat());
+        m.put("lon", r.getLon());
+        m.put("distanceKm", distanceKm);
+        return m;
     }
 
     public List<Auto> autocompleteTitles(String keyword, int limit) {

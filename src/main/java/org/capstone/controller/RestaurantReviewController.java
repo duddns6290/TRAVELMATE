@@ -9,10 +9,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/restaurant")
 @RequiredArgsConstructor
+// 가게 정보/리뷰/블로그/카테고리·키워드 검색 API
 public class RestaurantReviewController {
 
     private final RestaurantReviewService restaurantReviewService;
@@ -62,6 +64,18 @@ public class RestaurantReviewController {
     }
 
     // 자동완성 검색
+    // 지도 검색창 자동완성: 가까운 가게 순 (주소·사진·거리 포함)
+    @GetMapping("/search")
+    public ResponseEntity<List<Map<String, Object>>> searchNearby(
+            @RequestParam String keyword,
+            @RequestParam double lat,
+            @RequestParam double lon,
+            @RequestParam(defaultValue = "8") int limit,
+            @RequestParam(defaultValue = "30") double radiusKm) {
+        if (keyword.isBlank()) return ResponseEntity.ok(List.of());
+        return ResponseEntity.ok(restaurantReviewService.searchNearby(keyword, lat, lon, Math.min(limit, 20), radiusKm));
+    }
+
     @GetMapping("/autosearch")
     public ResponseEntity<List<Auto>> autocomplete(@RequestParam String keyword,
                                                      @RequestParam(defaultValue = "10") int limit) {
