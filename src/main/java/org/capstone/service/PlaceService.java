@@ -43,7 +43,7 @@ public class PlaceService {
         place.setPlace_business_hour(updated.getPlace_business_hour());
         place.setPlace_holiday(updated.getPlace_holiday());
         place.setPlace_stay_time(updated.getPlace_stay_time());
-        place.setNext_place_id(updated.getNext_place_id());
+        // next_place_id(순서)는 여기서 바꾸지 않는다. 순서 변경은 PlaceOrderService(잠금+트랜잭션)만 담당.
         place.setPlace_visiting_time(updated.getPlace_visiting_time());
         place.setLatitude(updated.getLatitude());
         place.setLongitude(updated.getLongitude());

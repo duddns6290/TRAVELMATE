@@ -1,6 +1,7 @@
 // 📁 src/hooks/useSchedule.js
 import axios from "axios";
 import { arrayMove } from "@dnd-kit/sortable";
+import { applySchedulePatch } from "../utils/applySchedulePatch";
 import { sortPlacesByNextPlaceId } from "../utils/sortPlaces";
 
 export const fetchSchedule = async (travelId, period, setSchedule) => {
@@ -105,53 +106,12 @@ export const handleItemClick = async (index, activeMode, schedule, selectedDay, 
     if (!confirmed) return;
 
     const prevPlace = index > 0 ? arr[index - 1] : null;
-    const nextPlace = arr[index + 1] || null;
 
     try {
-        // 1. 앞 이동시간 삭제
-        if (prevPlace?.moveTimeId) {
-            await axios.delete(`http://localhost:8080/movetime/${prevPlace.moveTimeId}`);
-            prevPlace.moveTimeId = null;
-            prevPlace.travelTime = null;
-            prevPlace.type = null;
-            prevPlace.placeUrl = null;
-            console.log("앞 이동시간 삭제 완료");
-        }
-
-        // 2. 뒤 이동시간 삭제
-        if (place.moveTimeId) {
-            await axios.delete(`http://localhost:8080/movetime/${place.moveTimeId}`);
-            console.log("뒤 이동시간 삭제 완료");
-        }
-
-        // 3. 앞 장소의 next_place_id 갱신
-        if (prevPlace) {
-            const payload = {
-                place_id: parseInt(prevPlace.id),
-                place_name: prevPlace.name,
-                place_address: prevPlace.address,
-                place_image: prevPlace.image,
-                place_business_hour: prevPlace.businessHour,
-                place_holiday: prevPlace.holiday,
-                place_stay_time: prevPlace.stayTime,
-                next_place_id: nextPlace ? parseInt(nextPlace.id) : null,
-                place_visiting_time: prevPlace.time && prevPlace.time !== "미정" ? `${prevPlace.time}:00` : "00:00:00",
-                latitude: prevPlace.latitude,
-                longitude: prevPlace.longitude,
-                travelId: prevPlace.travelId,
-                selected_day: prevPlace.selectedDay,
-                mongo: prevPlace.mongo
-            };
-
-            await axios.put(`http://localhost:8080/place/${prevPlace.id}`, payload);
-            console.log("next_place_id 갱신 완료");
-        }
-
-        // 4. 장소 삭제
+        // 서버가 한 트랜잭션에서 처리: 장소 삭제 + 앞뒤 다시 잇기 + 관련 이동시간 정리 (일차 잠금 안에서)
         await axios.delete(`http://localhost:8080/place/${place.id}`, { params: { userId } });
-        console.log("장소 삭제 완료");
 
-        // 5. 상태 반영 + 다른 사용자에게 전파
+        // 저장 성공 후 화면 반영 + 다른 사용자에게 전파
         applyAndBroadcast("PLACE_DELETE", place.id, { selectedDay, prevPlaceId: prevPlace?.id });
         window.dispatchEvent(new Event("refresh-timetable"));
     } catch (err) {
@@ -164,46 +124,12 @@ export const handleItemClick = async (index, activeMode, schedule, selectedDay, 
     }
 };
 
-export const useDragHandler = (schedule, setSchedule, selectedDay, applyAndBroadcast) => {
-    // 원래 목록(prevItems)의 이동시간/방문시간을 지우고, 새 순서(items)대로 next_place_id를 저장한다.
-    // 장소별 요청은 서로 독립적이므로 병렬로 보낸다.
-    const persistOrder = async (prevItems, items) => {
-        await Promise.all(prevItems.map(async (place) => {
-            if (!place.moveTimeId) return;
-            try {
-                await axios.delete(`http://localhost:8080/movetime/${place.moveTimeId}`);
-            } catch (err) {
-                console.error("이동시간 삭제 실패", err);
-            }
-        }));
-
-        await Promise.all(items.map(async (current, i) => {
-            const next = items[i + 1];
-            const payload = {
-                place_id: parseInt(current.id),
-                place_name: current.name,
-                place_address: current.address,
-                place_image: current.image,
-                place_business_hour: current.businessHour,
-                place_holiday: current.holiday,
-                place_stay_time: current.stayTime,
-                next_place_id: next ? parseInt(next.id) : null,
-                place_visiting_time: "00:00:00", // 순서가 바뀌면 방문시간은 초기화
-                latitude: current.latitude,
-                longitude: current.longitude,
-                travelId: current.travelId,
-                selected_day: current.selectedDay,
-                mongo: current.mongo
-            };
-
-            try {
-                await axios.put(`http://localhost:8080/place/${current.id}`, payload);
-            } catch (err) {
-                console.error("순서 업데이트 실패", err);
-            }
-        }));
-    };
-
+export const useDragHandler = (schedule, setSchedule, selectedDay, userId) => {
+    // 드래그로 순서 변경
+    //  1. 화면은 바로 바꾼다 (낙관적 업데이트, 소켓 전파는 하지 않음)
+    //  2. 서버에는 최종 순서가 아니라 "이 장소를 몇 번째로" 이동 명령만 보낸다
+    //  3. 서버가 일차 잠금 + 트랜잭션으로 최신 순서에 적용하고, 확정된 순서를 모두에게 ORDER_SYNC로 보낸다
+    //  4. 실패하면 이전 순서로 되돌리고(롤백) 서버 데이터로 다시 맞춘다
     const handleDragEnd = async (event) => {
         const { active, over } = event;
         if (!over || active.id === over.id) return;
@@ -213,23 +139,43 @@ export const useDragHandler = (schedule, setSchedule, selectedDay, applyAndBroad
         const toIndex = prevItems.findIndex(item => item.id === over.id);
         if (fromIndex === -1 || toIndex === -1) return;
 
-        // 화면에 보이는 순서와 저장되는 순서가 같도록 한 번만 계산한다.
-        // 순서가 바뀌면 방문시간/이동시간은 의미가 없어지므로 즉시 비워서 저장 후 화면이 튀지 않게 한다.
-        const items = arrayMove(prevItems, fromIndex, toIndex).map((item, i, arr) => ({
-            ...item,
-            nextPlaceId: arr[i + 1] ? parseInt(arr[i + 1].id) : null,
-            time: null,
-            travelTime: null,
-            moveTimeId: null,
-            type: null,
-            placeUrl: null,
+        const travelId = prevItems[fromIndex].travelId;
+
+        // 1. 낙관적 업데이트: 내 화면만 먼저 바꾼다. 순서가 바뀌면 방문시간·이동시간은 초기화된다(서버도 동일).
+        const optimistic = arrayMove(prevItems, fromIndex, toIndex).map(item => ({
+            ...item, time: null, travelTime: null, moveTimeId: null, type: null, placeUrl: null,
         }));
+        setSchedule(prev => ({ ...prev, [selectedDay]: optimistic }));
 
-        // 1. 즉시 화면(패널+지도) 반영 + 다른 사용자에게 전파
-        applyAndBroadcast("PLACE_REORDER", null, { selectedDay, items });
-
-        // 2. 서버 저장
-        await persistOrder(prevItems, items);
+        try {
+            // 2. 이동 명령만 전송
+            const res = await axios.post("http://localhost:8080/place/move", {
+                travelId,
+                day: selectedDay,
+                placeId: parseInt(active.id, 10),
+                toIndex,
+                userId,
+            });
+            // 3. 서버가 확정한 순서로 맞춘다 (다른 사람 변경이 먼저 반영됐을 수 있음).
+            //    같은 내용이 소켓 ORDER_SYNC로도 오지만, 응답으로 먼저 맞춰 두면 소켓이 늦어도 화면이 정확하다.
+            const confirmed = (res.data.order || []).map(String);
+            const mine = new Set(prevItems.map(item => item.id));
+            const sameMembers = confirmed.length === mine.size && confirmed.every(id => mine.has(id));
+            if (sameMembers) {
+                setSchedule(prev => applySchedulePatch(prev, { type: "ORDER_SYNC", newValue: res.data }));
+            } else {
+                // 그사이 누가 장소를 추가·삭제해 내 목록과 다르면 서버에서 다시 불러온다
+                window.dispatchEvent(new Event("refresh-timetable"));
+            }
+        } catch (err) {
+            // 4. 롤백: 이전 순서로 되돌리고, 서버 데이터로 다시 불러와 확실히 맞춘다
+            console.error("순서 변경 실패", err);
+            setSchedule(prev => ({ ...prev, [selectedDay]: prevItems }));
+            window.dispatchEvent(new Event("refresh-timetable"));
+            alert(err.response?.status === 409
+                ? "다른 사용자가 순서를 바꾸는 중이에요. 잠시 후 다시 시도해주세요."
+                : "순서를 저장하지 못해 이전 순서로 되돌렸어요.");
+        }
     };
 
     return { handleDragEnd };

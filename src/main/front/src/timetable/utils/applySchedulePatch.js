@@ -35,6 +35,22 @@ export function applySchedulePatch(schedule, { type, placeId, newValue }) {
             return { ...schedule, [day]: newValue.items };
         }
 
+        // 서버가 확정한 순서(장소 id 목록). 순서가 바뀌면 그날 방문시간·이동시간은 서버에서 초기화되므로 화면도 비운다.
+        // 내 목록과 장소 구성이 다르면(누가 막 추가/삭제) 합칠 수 없으므로 그대로 두고, 호출한 쪽이 다시 불러온다.
+        case "ORDER_SYNC": {
+            const order = (newValue.order || []).map(String);
+            const byId = Object.fromEntries(dayList.map(item => [item.id, item]));
+            if (order.length !== dayList.length || order.some(id => !byId[id])) return schedule;
+            return {
+                ...schedule,
+                [day]: order.map((id, i) => ({
+                    ...byId[id],
+                    nextPlaceId: order[i + 1] ? Number(order[i + 1]) : null,
+                    time: null, travelTime: null, moveTimeId: null, type: null, placeUrl: null,
+                })),
+            };
+        }
+
         case "PLACE_TIME_UPDATE": {
             return {
                 ...schedule,
