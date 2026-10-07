@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "../Timetable.module.css";
 import DraggableSchedule from "./DraggableSchedule";
+import AddPlacePopover from "./AddPlacePopover";
+import RouteDetail from "./RouteDetail";
+import MemoPreview from "./MemoPreview";
+import PresenceTags, { presenceOutline } from "./PresenceTags";
 
 const defaultImage = "https://capstone12345-bu.s3.ap-northeast-2.amazonaws.com/memo/1748504910375_%EC%9D%B4%EB%AF%B8%EC%A7%80%20%EC%97%86%EC%9D%8C.png";
 // JWT 디코딩을 위해 필요한 유틸
@@ -33,8 +37,14 @@ const TimelinePanel = ({
                            handleSelectTransport,
                            handleMoveTimeDelete,
                            toggleMemoPanel,
+                           openPlaceDetail,
+                           isScrapOpen = false,
+                           onToggleScrap,
+                           hoverByPlace = {},
+                           onHoverPlace,
                            navigate,
-                           setNewTime,
+                           handleSaveTime,
+                           handleTimeDelete,
                            setSchedule,
                            modal,
                            lockedPlaces = {},
@@ -44,6 +54,9 @@ const TimelinePanel = ({
     const decoded = token ? parseJwt(token) : null;
     const userRole = decoded?.role;
     const isEditable = userRole === "host" || userRole === "guest_write";
+    const [addingPlace, setAddingPlace] = useState(false);
+    // 이동시간 상세(어떤 대중교통을 타는지 등)가 열린 구간: "출발장소id"
+    const [openRouteFrom, setOpenRouteFrom] = useState(null);
     return (
         <div className={styles.timelinePanel}>
             <div className={styles.headerRow}>
@@ -86,31 +99,26 @@ const TimelinePanel = ({
                     </button>
                 </div>
 
-                {isEditable && (
-                    <div>
+                <div className={styles.headerActions}>
+                    {/* 스크랩한 장소: 읽기 권한만 있어도 볼 수 있다 */}
+                    <button
+                        className={`${styles.editDeleteButton} ${isScrapOpen ? styles.headerButtonActive : ""}`}
+                        onClick={onToggleScrap}
+                    >
+                        🔖 스크랩
+                    </button>
+                    {isEditable && (
                         <button
-                            className={styles.editDeleteButton}
+                            className={`${styles.editDeleteButton} ${activeMode === "edit" ? styles.headerButtonActive : ""}`}
                             onClick={() => {
                                 setActiveMode(activeMode === "edit" ? null : "edit");
                                 setSelectedEditIndex(null);
                             }}
                         >
-                            편집
+                            {activeMode === "edit" ? "완료" : "편집"}
                         </button>
-                        <button
-                            className={`${styles.editDeleteButton} ${activeMode === "delete" ? styles.deleteModeItemButton : ""}`}
-                            onClick={() => setActiveMode(activeMode === "delete" ? null : "delete")}
-                        >
-                            삭제
-                        </button>
-                        <button
-                            className={styles.editDeleteButton}
-                            onClick={() => setActiveMode(activeMode === "time" ? null : "time")}
-                        >
-                            시간 추가
-                        </button>
-                    </div>
-                )}
+                    )}
+                </div>
 
             </div>
 
@@ -120,36 +128,33 @@ const TimelinePanel = ({
                         schedule={schedule}
                         selectedDay={selectedDay}
                         activeMode={activeMode}
-                        onItemClick={handleSelectForEdit}
-                        selectedEditIndex={selectedEditIndex}
                         setActiveMode={setActiveMode}
                         handleDragEnd={handleDragEnd}
                         visibleTransportIndex={visibleTransportIndex}
                         handleSelectTransport={handleSelectTransport}
                         lockedPlaces={lockedPlaces}
                         userId={userId}
+                        onSaveTime={handleSaveTime}
+                        onDeleteTime={handleTimeDelete}
+                        onDeleteItem={(idx) => handleItemClick(idx, "delete", schedule, selectedDay, setSchedule)}
+                        hoverByPlace={hoverByPlace}
+                        onHoverPlace={onHoverPlace}
                     />
                 ) : Array.isArray(schedule[selectedDay]) ? (
                     schedule[selectedDay].map((item, idx) => (
                         <React.Fragment key={item.id}>
                             <div
                                 className={`${styles.scheduleItem} ${activeMode === "delete" ? styles.deleteModeItem : ""}`}
+                                style={presenceOutline(hoverByPlace[item.id])}
+                                onMouseEnter={() => onHoverPlace?.(item.id)}
+                                onMouseLeave={() => onHoverPlace?.(null)}
                                 onClick={() => {
                                     if (activeMode === "delete") handleItemClick(idx, activeMode, schedule, selectedDay, setSchedule);
                                     else if (activeMode === "edit") handleSelectForEdit(idx);
                                 }}
                             >
-                                <div
-                                    className={styles.timeBox}
-                                    onClick={() => {
-                                        if (activeMode === "time") {
-                                            setSelectedIndex(idx);
-                                            setNewTime(item.time || "");
-                                            setModal("time");
-                                        }
-                                    }}
-                                    style={{ cursor: activeMode === "time" ? "pointer" : "default" }}
-                                >
+                                <PresenceTags userIds={hoverByPlace[item.id]} />
+                                <div className={styles.timeBox}>
                                     {item.time || "미정"}
                                 </div>
 
@@ -159,50 +164,32 @@ const TimelinePanel = ({
                                         alt={`${item.name} 이미지`}
                                         className={styles.itemImage}
                                     />
-                                    <div>
+                                    <div className={styles.itemBody}>
                                         <div
                                             className={styles.itemTitle}
-                                            onClick={() => {
-                                                if (activeMode !== "delete") {
-                                                    const mongoId = schedule[selectedDay][idx].mongo;
-                                                    if (!mongoId) {
-                                                        alert("상세 정보를 불러오지 못하는 장소입니다.");
-                                                        return;
-                                                    }
-                                                    navigate(`/place/${mongoId}`);
-                                                }
-                                            }}
+                                            onClick={() => openPlaceDetail(item.mongo, item)}
                                         >
                                             {item.name}
                                         </div>
                                         <div className={styles.itemCategory}>{item.address}</div>
+                                        <MemoPreview
+                                            memos={item.memos}
+                                            onOpen={(e) => {
+                                                e.stopPropagation();
+                                                toggleMemoPanel(idx);
+                                            }}
+                                            onAdd={(e) => {
+                                                // 메모 패널을 열면 메모가 없는 장소는 바로 새 메모 양식이 뜬다
+                                                e.stopPropagation();
+                                                toggleMemoPanel(idx);
+                                            }}
+                                        />
                                     </div>
-
-                                    {item.memos?.length > 0 && (
-                                        <div
-                                            className={styles.memoBox}
-                                            onClick={() => toggleMemoPanel(idx)}
-                                        >
-                                            메모
-                                        </div>
-                                    )}
                                 </div>
-
-                                {(item.memos?.length ?? 0) === 0 && (
-                                    <button
-                                        className={styles.memoAddButton}
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setSelectedIndex(idx);
-                                            setModal("addMemo");
-                                        }}
-                                    >
-                                        <span className={styles.plusIcon} >＋</span>
-                                    </button>
-                                )}
                             </div>
 
                             {idx < schedule[selectedDay].length - 1 && (
+                                <>
                                 <div className={styles.verticalConnectorWrapper}>
                                     <div className={styles.verticalLine} />
                                     <button
@@ -211,17 +198,25 @@ const TimelinePanel = ({
                                             if (activeMode === "delete") {
                                                 handleMoveTimeDelete(idx);
                                             } else {
-                                                const url = schedule[selectedDay]?.[idx]?.placeUrl;
-                                                if (url) window.open(url, "_blank");
+                                                // 바로 링크로 가지 않고 아래에 경로 상세 + 길찾기 버튼을 연다
+                                                setOpenRouteFrom(prev => (prev === item.id ? null : item.id));
                                             }
                                         }}
                                     >
                                         <div className={styles.labelRow}>
-                                            <label className={styles.transferText}>{schedule[selectedDay]?.[idx]?.type || "type"}</label>
-                                            <label className={styles.transferText}>{schedule[selectedDay]?.[idx]?.travelTime || "미정"}</label>
+                                            <label className={styles.transferText}>{item.type || "이동수단 미정"}</label>
+                                            {item.travelTime && <label className={styles.transferText}>{item.travelTime}</label>}
                                         </div>
                                     </button>
                                 </div>
+                                {openRouteFrom === item.id && (
+                                    <RouteDetail
+                                        from={item}
+                                        to={schedule[selectedDay][idx + 1]}
+                                        onClose={() => setOpenRouteFrom(null)}
+                                    />
+                                )}
+                                </>
                             )}
                         </React.Fragment>
                     ))
@@ -230,15 +225,26 @@ const TimelinePanel = ({
                 )}
             </div>
 
-            {modal !== "place" && isEditable && (
-                <div
-                    className={styles.guideToast}
-                    onClick={() => {
-                        setModal("place");
-                        setActiveMode(null);
-                    }}
-                >
-                    ➕ 원하는 장소가 없다면 여기를 클릭하세요!
+            {isEditable && (
+                <div className={styles.addPlaceArea}>
+                    {/* 버튼 바로 위에 뜨는 직접 추가 창 */}
+                    {addingPlace && (
+                        <AddPlacePopover
+                            onClose={() => setAddingPlace(false)}
+                            anchor={(() => {
+                                // 이 여행에 이미 있는 장소(오늘 → 다른 날 순) 근처 주소를 먼저 보여준다
+                                const all = [...(schedule[selectedDay] || []), ...Object.values(schedule).flat()];
+                                const p = all.find(x => x?.latitude != null && x?.longitude != null);
+                                return p ? { lat: Number(p.latitude), lng: Number(p.longitude) } : null;
+                            })()}
+                        />
+                    )}
+                    <div
+                        className={`${styles.guideToast} ${addingPlace ? styles.guideToastActive : ""}`}
+                        onClick={() => setAddingPlace(v => !v)}
+                    >
+                        {addingPlace ? "닫기" : "➕ 원하는 장소가 없다면 여기를 클릭하세요!"}
+                    </div>
                 </div>
             )}
         </div>
