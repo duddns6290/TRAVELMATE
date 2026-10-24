@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -44,24 +45,28 @@ public class PlaceController {
 
     //travelID별 조회
     @GetMapping("/travel/{travelId}")
+    @PreAuthorize("@travelAccess.hasTravelToken(authentication, #travelId)")
     public ResponseEntity<List<Place>> getPlacesByTravel(@PathVariable Long travelId) {
         return ResponseEntity.ok(placeService.getPlacesByTravelId(travelId));
     }
 
     //하나의 장소 조회
     @GetMapping("/{placeId}")
+    @PreAuthorize("@travelAccess.canAccessPlace(authentication, #placeId)")
     public ResponseEntity<Place> getPlace(@PathVariable int placeId) {
         return ResponseEntity.ok(placeService.getPlace(placeId));
     }
 
     //장소 등록: 그날 순서의 맨 뒤에 붙인다 (일차 잠금 안에서 처리 → 동시에 등록해도 연결이 깨지지 않음)
     @PostMapping
+    @PreAuthorize("@travelAccess.hasTravelToken(authentication, #place.travelId)")
     public ResponseEntity<Place> createPlace(@RequestBody Place place) {
         return ResponseEntity.ok(placeOrderService.append(place));
     }
 
     //순서 변경: 서버가 최신 순서를 읽어 이동을 적용하고 확정된 순서(장소 id 목록)를 돌려준다
     @PostMapping("/move")
+    @PreAuthorize("@travelAccess.hasTravelToken(authentication, #req.travelId())")
     public ResponseEntity<Map<String, Object>> movePlace(@RequestBody MoveRequest req) {
         List<Integer> order = placeOrderService.move(req.travelId(), req.day(), req.placeId(), req.toIndex(), req.userId());
         return ResponseEntity.ok(Map.of("selectedDay", req.day(), "order", order));
@@ -69,12 +74,14 @@ public class PlaceController {
 
     //장소 수정
     @PutMapping("/{placeId}")
+    @PreAuthorize("@travelAccess.canAccessPlace(authentication, #placeId)")
     public ResponseEntity<Place> updatePlace(@PathVariable int placeId, @RequestBody Place place) {
         return ResponseEntity.ok(placeService.updatePlace(placeId, place));
     }
 
     //장소 삭제
     @DeleteMapping("/{placeId}")
+    @PreAuthorize("@travelAccess.canAccessPlace(authentication, #placeId)")
     public ResponseEntity<Void> deletePlace(
             @PathVariable int placeId,
             @RequestParam(required = false) String userId) {
@@ -85,6 +92,7 @@ public class PlaceController {
 
     // 방문 시간 등록 또는 수정
     @PutMapping("/{id}/visiting-time")
+    @PreAuthorize("@travelAccess.canAccessPlace(authentication, #id)")
     public ResponseEntity<Place> setVisitingTime(
             @PathVariable int id,
             @RequestParam("time") @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime time,
@@ -95,12 +103,14 @@ public class PlaceController {
 
     // 방문 시간 조회
     @GetMapping("/{id}/visiting-time")
+    @PreAuthorize("@travelAccess.canAccessPlace(authentication, #id)")
     public ResponseEntity<LocalTime> getVisitingTime(@PathVariable int id) {
         return ResponseEntity.ok(placeService.getVisitingTime(id));
     }
 
     // 방문 시간 삭제
     @DeleteMapping("/{id}/visiting-time")
+    @PreAuthorize("@travelAccess.canAccessPlace(authentication, #id)")
     public ResponseEntity<Place> deleteVisitingTime(@PathVariable int id) {
         return ResponseEntity.ok(placeService.deleteVisitingTime(id));
     }

@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,6 +30,7 @@ public class TravelUserController {
 
     // 권한 조회
     @GetMapping("/role")
+    @PreAuthorize("@travelAccess.isMember(authentication, #travelId)")
     public ResponseEntity<Role> getRole(
             @RequestParam int travelId,
             @RequestParam String userId
@@ -39,6 +41,7 @@ public class TravelUserController {
 
     // 권한 수정
     @PutMapping("/role")
+    @PreAuthorize("@travelAccess.isHost(authentication, #travelId)")
     public ResponseEntity<TravelUser> updateRole(
             @RequestParam int travelId,
             @RequestParam String userId,
@@ -50,6 +53,7 @@ public class TravelUserController {
 
     // 권한 삭제
     @DeleteMapping("/role")
+    @PreAuthorize("@travelAccess.isHost(authentication, #travelId)")
     public ResponseEntity<Void> deleteRole(
             @RequestParam int travelId,
             @RequestParam String userId
@@ -60,6 +64,7 @@ public class TravelUserController {
 
     // 새로운 TravelUser 추가
     @PostMapping
+    @PreAuthorize("@travelAccess.isHost(authentication, #travelId)")
     public ResponseEntity<TravelUser> createTravelUser(
             @RequestParam int travelId,
             @RequestParam String userId,
@@ -70,6 +75,7 @@ public class TravelUserController {
     }
     //여행별 권한 유저들 조회
     @GetMapping("/{travelId}")
+    @PreAuthorize("@travelAccess.isMember(authentication, #travelId)")
     public List<TravelUserResponse> getTravelUsers(@PathVariable int travelId) {
         return travelUserService.getUsersByTravelId(travelId);
     }
