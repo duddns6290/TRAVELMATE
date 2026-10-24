@@ -1,5 +1,6 @@
 package org.capstone.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
@@ -17,6 +18,7 @@ public class User {
     //속성 이름이랑 맞추기
     private String userid;
     private String name;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // 로그인 요청으로는 받되, 응답 JSON에는 절대 내보내지 않는다
     private String userpw;
     private String email;
     private String provider;
