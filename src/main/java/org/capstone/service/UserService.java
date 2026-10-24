@@ -6,30 +6,59 @@ import org.capstone.entity.User;
 import org.capstone.entity.userFriend.UserDTO;
 import org.capstone.repository.FriendRepository;
 import org.capstone.repository.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
 public class UserService {
     private static final Logger logger = Logger.getLogger(UserService.class.getName());
+    // BCrypt 해시 형식: $2a$10$ + 53자
+    private static final Pattern BCRYPT = Pattern.compile("^\\$2[aby]\\$\\d{2}\\$[./A-Za-z0-9]{53}$");
+
     private final UserRepository userRepository;
     private final FriendRepository friendRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, FriendRepository friendRepository) {
+    public UserService(UserRepository userRepository, FriendRepository friendRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.friendRepository = friendRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
-    //로그인 코드 (정상 동작 되는 것 )
+    // 아이디/비밀번호 로그인. 비밀번호는 BCrypt 해시로 비교한다.
+    // 예전에 평문으로 저장된 비밀번호는 로그인에 성공하는 순간 해시로 바꿔 저장한다 (다음부터는 해시로만 비교).
+    @Transactional
     public boolean authenticate(String userid, String password) {
         logger.info("Authenticating user: " + userid);
+        if (userid == null || password == null) return false;
+
         return userRepository.findByUserid(userid)
-                .map(user -> user.getUserpw().equals(password)) // 평문 비교
+                .map(user -> {
+                    String stored = user.getUserpw();
+                    if (stored == null) return false; // OAuth로만 가입한 계정
+
+                    if (BCRYPT.matcher(stored).matches()) {
+                        return passwordEncoder.matches(password, stored);
+                    }
+
+                    boolean ok = MessageDigest.isEqual(
+                            stored.getBytes(StandardCharsets.UTF_8), password.getBytes(StandardCharsets.UTF_8));
+                    if (ok) {
+                        user.setUserpw(passwordEncoder.encode(password));
+                        userRepository.save(user);
+                        logger.info("평문 비밀번호를 BCrypt 해시로 전환: " + userid);
+                    }
+                    return ok;
+                })
                 .orElse(false);
     }
 
