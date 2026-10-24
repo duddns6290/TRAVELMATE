@@ -2,6 +2,7 @@ package org.capstone.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.capstone.service.PDF_Service;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -13,6 +14,7 @@ public class PDF_Controller {
     private final PDF_Service pdfService;
 
     @GetMapping("/travel/{id}/timetable")
+    @PreAuthorize("@travelAccess.isMember(authentication, #id)")
     public void exportPdf(@PathVariable Long id, HttpServletResponse response) {
         String html = pdfService.renderTravelHtmlForPdf(id);
         pdfService.exportToPdf(response, html);
