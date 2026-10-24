@@ -14,6 +14,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker("/topic");  // 클라이언트 수신
         config.setApplicationDestinationPrefixes("/app");  // 클라이언트 송신
+        // 브로커가 각 구독자에게 보내는 메시지를 보낸 순서대로 전달 (기본은 스레드 풀이라 순서가 섞일 수 있다)
+        config.setPreservePublishOrder(true);
     }
 
     @Override
@@ -21,5 +23,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/ws")  // 연결 URL
                 .setAllowedOriginPatterns("*")
                 .withSockJS();       // SockJS 지원 (호환성 보장)
+        // 한 사용자가 보낸 메시지를 받은 순서대로 처리 (PLACE_LOCK → PLACE_UNLOCK이 뒤바뀌지 않게)
+        registry.setPreserveReceiveOrder(true);
     }
 }
