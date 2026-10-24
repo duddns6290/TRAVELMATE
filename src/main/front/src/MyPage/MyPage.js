@@ -52,8 +52,14 @@ const MyPage = () => {
         }
     };
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
+        try {
+            await axios.post("/auth/logout", null, { withCredentials: true }); // 서버의 Refresh Token 폐기
+        } catch (e) {
+            console.warn("로그아웃 요청 실패 (토큰은 지움):", e);
+        }
         localStorage.removeItem("accessToken");
+        sessionStorage.removeItem("userId");
         navigate("/login");
     };
 
@@ -302,11 +308,9 @@ const MyPage = () => {
                                     <div className="cardText">
                                         <strong className="tripTitle" onClick={async () => {
                                             try {
-                                                const userId = sessionStorage.getItem("userId"); // 세션에서 사용자 ID 가져오기
-
+                                                // 사용자는 서버가 로그인 토큰으로 확인한다 (userId는 보내지 않음)
                                                 const response = await axios.post("http://localhost:8080/auth/switch-travel",
                                                     {
-                                                        userId: userId,
                                                         travelId: trip.travelId
                                                     },
                                                     {

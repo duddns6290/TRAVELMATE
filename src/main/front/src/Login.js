@@ -22,24 +22,22 @@ const Login = () => {
         }
 
         try {
+            // withCredentials: 응답의 Refresh Token 쿠키(HttpOnly)를 브라우저가 저장하도록
             const response = await axios.post("http://localhost:8080/user/login", {
                 userid,
                 userpw
-            });
+            }, { withCredentials: true });
 
-            if (response.data === userid) {
-                sessionStorage.setItem("userId", userid);
-
-                setMessage("로그인 성공!");
-                setTimeout(() => {
-                    window.location.href = "/";
-                }, 500);
-            } else {
-                setMessage("로그인 실패: " + response.data.message);
-            }
+            localStorage.setItem("accessToken", response.data.accessToken);
+            sessionStorage.setItem("userId", response.data.userId);
+            window.location.href = "/";
         } catch (error) {
-            setMessage("서버 오류 발생");
-            console.error("로그인 요청 실패:", error);
+            if (error.response?.status === 401) {
+                setMessage(error.response.data?.message || "아이디 또는 비밀번호가 올바르지 않습니다.");
+            } else {
+                setMessage("서버 오류 발생");
+                console.error("로그인 요청 실패:", error);
+            }
         }
     };
 

@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -37,7 +36,10 @@ public class TokenProvider {
     private Key key;
     private static final String KEY_ROLE = "role";
     private static final String KEY_TOKEN_TYPE = "tokenType";
+    private static final String KEY_TRAVEL_ID = "travelId";
     private static final String TOKEN_TYPE_ACCESS = "access";
+    private static final String TOKEN_TYPE_REFRESH = "refresh";
+    private static final String DEFAULT_ROLE = "HOST";
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30L; // 30분
     private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60L * 24 * 7; // 7일
     private final long EXPIRATION_TIME = 1000 * 60 * 60;
@@ -47,37 +49,58 @@ public class TokenProvider {
         this.key = Keys.hmacShaKeyFor(Base64.getEncoder().encodeToString(secretKey.getBytes()).getBytes());
     }
 
-    // AccessToken 생성
-    public String generateAccessToken(Authentication authentication) {
-        return generateToken(authentication, ACCESS_TOKEN_EXPIRE_TIME);
-    }
-
-    // 토큰 생성 - 사용자 정보와 권한을 기반으로 JWT 생성
-    private String generateToken(Authentication authentication, long expireTime) {
-        Date now = new Date();
-        Date expiry = new Date(now.getTime() + expireTime);
-
-        String authorities = authentication.getAuthorities().stream()
-                .map(a -> a.getAuthority())
-                .collect(Collectors.joining(","));
-
+    // OAuth 로그인 사용자의 userId (이메일 앞부분)
+    public String getUserId(Authentication authentication) {
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         String email = oAuth2User.getAttribute("email");
-        String userid = email.split("@")[0];
+        return email.split("@")[0];
+    }
 
-        String role = oAuth2User.getAttribute("role");
-        if (role == null) {
-            role = "HOST"; // 기본값 지정
-        }
+    // AccessToken 생성 (OAuth 로그인 직후)
+    public String generateAccessToken(Authentication authentication) {
+        return createAccessToken(getUserId(authentication));
+    }
+
+    // AccessToken 생성 - 여행이 정해지기 전의 로그인 토큰 (travelId 없음)
+    public String createAccessToken(String userId) {
+        Date now = new Date();
 
         return Jwts.builder()
-                .setSubject(userid)       // 사용자 식별자 (userId)
-                .claim(KEY_ROLE, role)           // 사용자 권한 정보 저장
+                .setSubject(userId)       // 사용자 식별자 (userId)
+                .claim(KEY_ROLE, DEFAULT_ROLE)           // 사용자 권한 정보 저장
                 .claim(KEY_TOKEN_TYPE, TOKEN_TYPE_ACCESS) // ACCESS 토큰 표시 (getAuthentication()에서 확인)
                 .setIssuedAt(now)                           // 발급시간
-                .setExpiration(expiry)                      // 만료시간
+                .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRE_TIME)) // 만료시간
                 .signWith(key, SignatureAlgorithm.HS256)    // 서명
                 .compact();
+    }
+
+    // RefreshToken 생성 - Access Token 재발급에만 쓴다. 매번 다른 값이 되도록 jti(랜덤 id)를 넣는다.
+    public String createRefreshToken(String userId) {
+        Date now = new Date();
+
+        return Jwts.builder()
+                .setSubject(userId)
+                .setId(UUID.randomUUID().toString())
+                .claim(KEY_TOKEN_TYPE, TOKEN_TYPE_REFRESH)
+                .setIssuedAt(now)
+                .setExpiration(new Date(now.getTime() + REFRESH_TOKEN_EXPIRE_TIME))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public long getRefreshTokenExpireMillis() {
+        return REFRESH_TOKEN_EXPIRE_TIME;
+    }
+
+    // RefreshToken 검증: 서명·만료·종류(refresh)가 모두 맞으면 userId, 아니면 null
+    public String parseRefreshToken(String token) {
+        try {
+            Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+            return TOKEN_TYPE_REFRESH.equals(claims.get(KEY_TOKEN_TYPE)) ? claims.getSubject() : null;
+        } catch (JwtException | IllegalArgumentException e) {
+            return null;
+        }
     }
 
 
@@ -99,7 +122,10 @@ public class TokenProvider {
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
-        User principal = new User(claims.getSubject(), "", authorities);
+        Object travelIdObj = claims.get(KEY_TRAVEL_ID);
+        Integer travelId = travelIdObj != null ? Integer.valueOf(travelIdObj.toString()) : null;
+
+        JwtUser principal = new JwtUser(claims.getSubject(), travelId, authorities);
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
 
@@ -138,7 +164,7 @@ public class TokenProvider {
 
     public String createTravelToken(String userId, int travelId, String role) {
         Claims claims = Jwts.claims().setSubject(userId);
-        claims.put("travelId", travelId);
+        claims.put(KEY_TRAVEL_ID, travelId);
         claims.put("role", role);
         claims.put(KEY_TOKEN_TYPE, TOKEN_TYPE_ACCESS);
 
