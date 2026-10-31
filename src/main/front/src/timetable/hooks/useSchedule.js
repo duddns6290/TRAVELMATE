@@ -3,18 +3,19 @@ import axios from "axios";
 import { arrayMove } from "@dnd-kit/sortable";
 import { applySchedulePatch } from "../utils/applySchedulePatch";
 import { sortPlacesByNextPlaceId } from "../utils/sortPlaces";
+import { API_BASE } from "../../config/api";
 
 export const fetchSchedule = async (travelId, period, setSchedule) => {
     if (!travelId || !period) return;
 
     try {
-        const res = await axios.get(`http://localhost:8080/place/travel/${travelId}`);
+        const res = await axios.get(`${API_BASE}/place/travel/${travelId}`);
         const placeList = res.data;
         console.log("여행 목록", placeList)
         // 1. 메모 비동기 요청
         const memoPromises = placeList.map(place =>
             axios
-                .get(`http://localhost:8080/memos/place/${place.place_id}`)
+                .get(`${API_BASE}/memos/place/${place.place_id}`)
                 .then(res => ({ placeId: place.place_id, memos: res.data }))
                 .catch(() => ({ placeId: place.place_id, memos: [] }))
         );
@@ -35,7 +36,7 @@ export const fetchSchedule = async (travelId, period, setSchedule) => {
         // (예전에는 DB 순서상 "다음 항목"이 같은 날일 때만 조회해서, 타임라인 순서와 DB 순서가 다르면 저장된 이동시간이 안 보였다)
         await Promise.all(placeList.map(async (from) => {
             try {
-                const moveRes = await axios.get(`http://localhost:8080/movetime/departure/${from.place_id}`);
+                const moveRes = await axios.get(`${API_BASE}/movetime/departure/${from.place_id}`);
                 const moveTimeData = moveRes.data?.[0];
                 if (moveTimeData) {
                     from.travelTime = `${moveTimeData.time} / ${moveTimeData.distance}`;
@@ -109,7 +110,7 @@ export const handleItemClick = async (index, activeMode, schedule, selectedDay, 
 
     try {
         // 서버가 한 트랜잭션에서 처리: 장소 삭제 + 앞뒤 다시 잇기 + 관련 이동시간 정리 (일차 잠금 안에서)
-        await axios.delete(`http://localhost:8080/place/${place.id}`, { params: { userId } });
+        await axios.delete(`${API_BASE}/place/${place.id}`, { params: { userId } });
 
         // 저장 성공 후 화면 반영 + 다른 사용자에게 전파
         applyAndBroadcast("PLACE_DELETE", place.id, { selectedDay, prevPlaceId: prevPlace?.id });
@@ -149,7 +150,7 @@ export const useDragHandler = (schedule, setSchedule, selectedDay, userId) => {
 
         try {
             // 2. 이동 명령만 전송
-            const res = await axios.post("http://localhost:8080/place/move", {
+            const res = await axios.post(`${API_BASE}/place/move`, {
                 travelId,
                 day: selectedDay,
                 placeId: parseInt(active.id, 10),

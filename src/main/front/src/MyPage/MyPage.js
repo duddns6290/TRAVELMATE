@@ -5,6 +5,7 @@ import axios from "axios";
 import "./Mypage.css";
 import ShareSettings from "../Share/ShareSettings";
 import {jwtDecode} from "jwt-decode";
+import { API_BASE } from "../config/api";
 
 const defaultImage = "https://capstone12345-bu.s3.ap-northeast-2.amazonaws.com/travel/1748192628867_%EC%97%AC%ED%96%89%20%EB%93%B1%EB%A1%9D%20%EA%B8%B0%EB%B3%B8%20%EC%9D%B4%EB%AF%B8%EC%A7%80.png";
 
@@ -34,7 +35,7 @@ const MyPage = () => {
 
     const fetchFriends = async () => {
         try {
-            const res = await axios.get(`http://localhost:8080/user/${userId}/friends`);
+            const res = await axios.get(`${API_BASE}/user/${userId}/friends`);
             setFriends(res.data);
             console.log("친구 데이터:", res.data);
         } catch (err) {
@@ -45,7 +46,7 @@ const MyPage = () => {
 
     const fetchRequests = async () => {
         try {
-            const res = await axios.get(`http://localhost:8080/user/${userId}/friends/requested`);
+            const res = await axios.get(`${API_BASE}/user/${userId}/friends/requested`);
             setRequests(res.data);
         } catch (err) {
             console.error("친구 요청 목록 가져오기 실패:", err);
@@ -65,7 +66,7 @@ const MyPage = () => {
 
     const fetchTrips = async () => {
         try {
-            const res = await axios.get(`http://localhost:8080/travel/${userId}`);
+            const res = await axios.get(`${API_BASE}/travel/${userId}`);
             const travelData = res.data.map(trip => ({
                 travelId: trip.travel_id,
                 title: trip.travel_name,
@@ -82,7 +83,7 @@ const MyPage = () => {
     //친구 요청
     const handleFriendRequest = async () => {
         try {
-            await axios.post(`http://localhost:8080/user/${userId}/friends/request`, {
+            await axios.post(`${API_BASE}/user/${userId}/friends/request`, {
                 friendId: friendInput
             });
             alert("친구 요청이 전송되었습니다.");
@@ -96,7 +97,7 @@ const MyPage = () => {
     //친구 승인
     const handleAcceptRequest = async (requesterId) => {
         try {
-            const temp = await axios.post(`http://localhost:8080/user/${userId}/friends/accept`, {
+            const temp = await axios.post(`${API_BASE}/user/${userId}/friends/accept`, {
                 friendId: requesterId
             });
             console.log(temp)
@@ -130,7 +131,7 @@ const MyPage = () => {
         };
 
         try {
-            await axios.put(`http://localhost:8080/travel/${editForm.id}`, updatedTravel, {
+            await axios.put(`${API_BASE}/travel/${editForm.id}`, updatedTravel, {
                 headers: {
                     "Content-Type": "application/json"
                 }
@@ -166,7 +167,7 @@ const MyPage = () => {
         }
 
         try {
-            await axios.post("http://localhost:8080/travel", formData, {
+            await axios.post(`${API_BASE}/travel`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data"
                 }
@@ -196,7 +197,7 @@ const MyPage = () => {
     const handleDelete = async (id) => {
         if (window.confirm("정말 삭제하시겠습니까?")) {
             try {
-                await axios.delete(`http://localhost:8080/travel/${id}`);
+                await axios.delete(`${API_BASE}/travel/${id}`);
                 fetchTrips();
             } catch (err) {
                 console.error("삭제 실패:", err);
@@ -206,7 +207,7 @@ const MyPage = () => {
 
     const handlepdf = async (travelId, travelTitle) => {
         try {
-            const response = await axios.get(`http://localhost:8080/pdf/travel/${travelId}/timetable`, {
+            const response = await axios.get(`${API_BASE}/pdf/travel/${travelId}/timetable`, {
                 responseType: 'blob',
             });
 
@@ -309,7 +310,7 @@ const MyPage = () => {
                                         <strong className="tripTitle" onClick={async () => {
                                             try {
                                                 // 사용자는 서버가 로그인 토큰으로 확인한다 (userId는 보내지 않음)
-                                                const response = await axios.post("http://localhost:8080/auth/switch-travel",
+                                                const response = await axios.post(`${API_BASE}/auth/switch-travel`,
                                                     {
                                                         travelId: trip.travelId
                                                     },

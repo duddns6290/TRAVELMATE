@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./ShareSettings.css";
+import { API_BASE } from "../config/api";
 
 const ShareSettings = ({ travelId, onClose }) => {
     const [users, setUsers] = useState([]);
@@ -24,7 +25,7 @@ const ShareSettings = ({ travelId, onClose }) => {
         const token = localStorage.getItem("accessToken");
         console.log("🧪 accessToken:", token);
 
-        axios.get(`http://localhost:8080/traveluser/${travelId}`, {
+        axios.get(`${API_BASE}/traveluser/${travelId}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }

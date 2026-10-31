@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import styles from "../Timetable.module.css";
+import { API_BASE } from "../../config/api";
 
 const STEP_ICON = { WALKING: "🚶", BUS: "🚌", SUBWAY: "🚇", TRAIN: "🚆", EXPRESSBUS: "🚍", INTERCITYBUS: "🚍", FERRY: "⛴️", AIRPLANE: "✈️" };
 const stepIcon = (type) => STEP_ICON[type] || "🚌";
@@ -20,7 +21,7 @@ const RouteDetail = ({ from, to, onClose }) => {
 
     useEffect(() => {
         if (!isTransit || optionsCache[cacheKey]) return;
-        axios.get("http://localhost:8080/api/route/transit-options", {
+        axios.get(`${API_BASE}/api/route/transit-options`, {
             params: {
                 fromName: from.name, fromLat: from.latitude, fromLon: from.longitude,
                 toName: to.name, toLat: to.latitude, toLon: to.longitude,

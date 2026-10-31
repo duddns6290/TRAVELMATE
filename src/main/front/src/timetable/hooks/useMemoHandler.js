@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { API_BASE } from "../../config/api";
 
 const useMemoHandler = ({ schedule, setSchedule, selectedDay, selectedIndex, setModal, applyAndBroadcast, userId }) => {
     const [memoTitle, setMemoTitle] = useState("");
@@ -59,7 +60,7 @@ const useMemoHandler = ({ schedule, setSchedule, selectedDay, selectedIndex, set
             formData.append("memo", new Blob([JSON.stringify(memoData)], { type: "application/json" }));
             if (imageFile) formData.append("image", imageFile);
 
-            axios.post(`http://localhost:8080/memos/place/${target.id}/memo`, formData, {
+            axios.post(`${API_BASE}/memos/place/${target.id}/memo`, formData, {
                 headers: { "Content-Type": "multipart/form-data" }
             }).then(() => console.log(isEditMode ? "메모 수정 성공" : "메모 저장 성공"))
                 .catch(err => console.error("메모 저장 실패", err));
@@ -116,7 +117,7 @@ const useMemoHandler = ({ schedule, setSchedule, selectedDay, selectedIndex, set
 
         let memoId = null;
         try {
-            const res = await axios.post(`http://localhost:8080/memos/place/${target.id}/memo`, formData, {
+            const res = await axios.post(`${API_BASE}/memos/place/${target.id}/memo`, formData, {
                 headers: { "Content-Type": "multipart/form-data" }
             });
             memoId = res.data?.memoId ?? null;
@@ -141,7 +142,7 @@ const useMemoHandler = ({ schedule, setSchedule, selectedDay, selectedIndex, set
         if (!target || !memoId) return false;
 
         try {
-            await axios.put(`http://localhost:8080/memos/${memoId}`, {
+            await axios.put(`${API_BASE}/memos/${memoId}`, {
                 memoText: text || null,
                 memoExtraLink: link || null,
             }, { params: { userId } });

@@ -5,6 +5,7 @@ import "./Login.js"
 import ImageSlider from "./ImageSlider";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "./UserContext";
+import { API_BASE } from "./config/api";
 
 const Main = () => {
     const { userId } = useContext(UserContext);
@@ -21,7 +22,7 @@ const Main = () => {
     //날씨 정보 받아오기
     const fetchWeatherByCoordinates = async (lat, lng) => {
         try {
-            const response = await fetch(`http://localhost:8080/api/weather?lat=${lat}&lng=${lng}`);
+            const response = await fetch(`${API_BASE}/api/weather?lat=${lat}&lng=${lng}`);
             if (!response.ok) {
                 throw new Error("날씨 정보 요청 실패");
             }

@@ -1,5 +1,6 @@
 import axios from "axios";
 import { getTimeBounds, parseTime } from "../utils/timeSlots";
+import { API_BASE } from "../../config/api";
 
 const useTimeEdit = ({ schedule, setSchedule, selectedDay, applyAndBroadcast, userId }) => {
     // 저장에 성공하면 true, 검증 실패/오류면 false를 돌려준다. (false면 모달을 닫지 않음)
@@ -27,7 +28,7 @@ const useTimeEdit = ({ schedule, setSchedule, selectedDay, applyAndBroadcast, us
         }
 
         try {
-            await axios.put(`http://localhost:8080/place/${place.id}/visiting-time`, null, {
+            await axios.put(`${API_BASE}/place/${place.id}/visiting-time`, null, {
                 params: { time: timeStr, userId },
             });
             applyAndBroadcast("PLACE_TIME_UPDATE", place.id, { selectedDay, time: timeStr });
@@ -55,7 +56,7 @@ const useTimeEdit = ({ schedule, setSchedule, selectedDay, applyAndBroadcast, us
         if (!confirmed) return;
 
         try {
-            await axios.delete(`http://localhost:8080/place/${place.id}/visiting-time`);
+            await axios.delete(`${API_BASE}/place/${place.id}/visiting-time`);
             applyAndBroadcast("PLACE_TIME_UPDATE", place.id, { selectedDay, time: null });
             console.log("방문시간 삭제 완료");
         } catch (err) {

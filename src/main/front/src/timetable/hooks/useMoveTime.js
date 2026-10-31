@@ -1,4 +1,5 @@
 import axios from "axios";
+import { API_BASE } from "../../config/api";
 
 const useMoveTime = ({ schedule, setSchedule, selectedDay, setIsLoadingRoute, applyAndBroadcast }) => {
     const handleSelectTransport = async (type, index) => {
@@ -13,7 +14,7 @@ const useMoveTime = ({ schedule, setSchedule, selectedDay, setIsLoadingRoute, ap
 
             // 🚗 자동차 / 🚶 도보 / 🚌 대중교통 모두 백엔드에서 계산
             const mode = type.includes("자동차") ? "car" : type.includes("도보") ? "walk" : "transmit";
-            const res = await axios.get("http://localhost:8080/api/route/v2", {
+            const res = await axios.get(`${API_BASE}/api/route/v2`, {
                 params: {
                     fromName: from.name,
                     fromLat: from.latitude,
@@ -52,11 +53,11 @@ const useMoveTime = ({ schedule, setSchedule, selectedDay, setIsLoadingRoute, ap
             };
 
             if (from.moveTimeId) {
-                await axios.put(`http://localhost:8080/movetime/${from.moveTimeId}`, moveTimePayload, {
+                await axios.put(`${API_BASE}/movetime/${from.moveTimeId}`, moveTimePayload, {
                     headers: { "Content-Type": "application/json" }
                 });
             } else {
-                const result = await axios.post("http://localhost:8080/movetime", moveTimePayload, {
+                const result = await axios.post(`${API_BASE}/movetime`, moveTimePayload, {
                     headers: { "Content-Type": "application/json" }
                 });
                 const newMoveTimeId = result.data?.id;
@@ -91,7 +92,7 @@ const useMoveTime = ({ schedule, setSchedule, selectedDay, setIsLoadingRoute, ap
         if (!confirmDelete) return;
 
         try {
-            await axios.delete(`http://localhost:8080/movetime/${from.moveTimeId}`);
+            await axios.delete(`${API_BASE}/movetime/${from.moveTimeId}`);
 
             // 상태 반영 + 다른 사용자에게 전파
             applyAndBroadcast("PLACE_MOVETIME_UPDATE", from.id, {

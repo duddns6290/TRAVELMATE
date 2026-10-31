@@ -2,6 +2,7 @@
 import { useEffect, useRef } from "react";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
+import { API_BASE } from "../../config/api";
 
 const useWebSocket = ({ travelId, onMessageReceive, onCursorReceive }) => {
     const clientRef = useRef(null);
@@ -16,7 +17,7 @@ const useWebSocket = ({ travelId, onMessageReceive, onCursorReceive }) => {
 
         const client = new Client({
             // 재연결 시마다 새 소켓이 필요하므로 팩토리 안에서 생성
-            webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
+            webSocketFactory: () => new SockJS(`${API_BASE}/ws`),
             reconnectDelay: 5000,
             onConnect: () => {
                 client.subscribe(`/topic/${travelId}`, (msg) => {

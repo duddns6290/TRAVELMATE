@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Login.css"; // 스타일 분리
+import { API_BASE } from "./config/api";
 
 const Login = () => {
     const [userid, setUserId] = useState("");
@@ -23,7 +24,7 @@ const Login = () => {
 
         try {
             // withCredentials: 응답의 Refresh Token 쿠키(HttpOnly)를 브라우저가 저장하도록
-            const response = await axios.post("http://localhost:8080/user/login", {
+            const response = await axios.post(`${API_BASE}/user/login`, {
                 userid,
                 userpw
             }, { withCredentials: true });
@@ -42,7 +43,7 @@ const Login = () => {
     };
 
     const handleOAuthLogin = (provider) => {
-        window.location.href = `http://localhost:8080/oauth2/authorization/${provider}`;
+        window.location.href = `${API_BASE}/oauth2/authorization/${provider}`;
     };
 
     return (
