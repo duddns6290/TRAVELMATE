@@ -75,8 +75,15 @@ const initializeMap = async ({ mapRef, markerRef, markersRef, infoWindowRef, set
     };
 
 
+    // 네이버 지도 Client ID는 빌드 시점 환경변수로 주입한다 (Client Secret은 프론트에 두지 않는다)
+    const naverMapClientId = process.env.REACT_APP_NAVER_MAP_CLIENT_ID;
+    if (!naverMapClientId) {
+        console.error("[Naver Map] REACT_APP_NAVER_MAP_CLIENT_ID 가 설정되지 않아 지도를 불러올 수 없습니다. src/main/front/.env.example 을 참고해 .env 에 설정한 뒤 다시 빌드/실행하세요.");
+        return;
+    }
+
     const script = document.createElement("script");
-    script.src = "https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=7alfuu4tdn&submodules=geocoder";
+    script.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${naverMapClientId}&submodules=geocoder`;
     script.async = true;
     script.onload = async () => {
         if (window.naver) {
