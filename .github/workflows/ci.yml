@@ -162,11 +162,14 @@ jobs:
           printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/deploy_key ~/.ssh/known_hosts
 
-      - name: 홈서버 SSH 연결 확인
+
+      - name: 홈서버 자동 배포 및 API 검증
+        env:
+          DEPLOY_SHA: ${{ github.sha }}
         run: |
           ssh -i ~/.ssh/deploy_key \
             -o IdentitiesOnly=yes \
             -o StrictHostKeyChecking=yes \
             -o ConnectTimeout=15 \
             deploy@100.80.204.93 \
-            'echo "SSH 연결 성공"; whoami; hostname'
+            "sudo -n /usr/local/sbin/travelmate-deploy $DEPLOY_SHA"
