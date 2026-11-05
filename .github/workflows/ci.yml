@@ -107,3 +107,32 @@ jobs:
         env:
           CI: 'false'
         run: npm run build
+
+  docker-build:
+    name: Docker 이미지 빌드 및 GHCR 업로드
+    needs:
+      - backend
+      - frontend
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: 코드 가져오기
+        uses: actions/checkout@v4
+
+      - name: GHCR 로그인
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Docker 이미지 빌드 및 업로드
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/duddns6290/travelmate-backend:${{ github.sha }}
