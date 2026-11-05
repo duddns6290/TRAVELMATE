@@ -32,7 +32,7 @@ jobs:
           --health-retries=10
 
     env:
-      DB_URL: jdbc:mysql://127.0.0.1:3306/travelmate_test?useSSL=false&serverTimezone=Asia/Seoul
+      DB_URL: jdbc:mysql://127.0.0.1:3306/travelmate_test?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul
       DB_USERNAME: testuser
       DB_PASSWORD: testpassword
       SPRING_DATA_MONGODB_URI: mongodb://127.0.0.1:27017/travelmate_test
