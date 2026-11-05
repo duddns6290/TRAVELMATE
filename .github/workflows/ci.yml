@@ -1,0 +1,57 @@
+
+name: TravelMate CI
+
+on:
+  push:
+    branches:
+      - chore/docker-deploy
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    name: Spring Boot 빌드 및 테스트
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 코드 가져오기
+        uses: actions/checkout@v4
+
+      - name: Java 17 설정
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+
+      - name: Spring Boot 테스트 및 빌드
+        run: bash ./gradlew build --no-daemon
+
+  frontend:
+    name: React 빌드
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: src/main/front
+
+    steps:
+      - name: 코드 가져오기
+        uses: actions/checkout@v4
+
+      - name: Node.js 설정
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: src/main/front/package-lock.json
+
+      - name: 패키지 설치
+        run: npm ci
+
+      - name: React 빌드
+        env:
+          CI: 'false'
+        run: npm run build
