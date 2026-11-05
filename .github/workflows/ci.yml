@@ -70,8 +70,17 @@ jobs:
           cache: gradle
 
       - name: Spring Boot 테스트 및 빌드
-        run: bash ./gradlew build --no-daemon
+        run: bash ./gradlew build --no-daemon --stacktrace
 
+      - name: 실패한 테스트 보고서 업로드
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: spring-test-report
+          path: |
+            build/test-results/test/
+            build/reports/tests/test/
+          if-no-files-found: warn
   frontend:
     name: React 빌드
     runs-on: ubuntu-latest
