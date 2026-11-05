@@ -136,3 +136,37 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/duddns6290/travelmate-backend:${{ github.sha }}
+
+  deploy:
+    name: Tailscale SSH 연결 테스트
+    needs: docker-build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/chore/docker-deploy'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Tailscale 연결
+        uses: tailscale/github-action@v3
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:github-actions
+
+      - name: SSH 인증 설정
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_KNOWN_HOSTS: ${{ secrets.DEPLOY_SSH_KNOWN_HOSTS }}
+        run: |
+          umask 077
+          mkdir -p ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
+          printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/deploy_key ~/.ssh/known_hosts
+
+      - name: 홈서버 SSH 연결 확인
+        run: |
+          ssh -i ~/.ssh/deploy_key \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            -o ConnectTimeout=15 \
+            deploy@100.80.204.93 \
+            'echo "SSH 연결 성공"; whoami; hostname'
