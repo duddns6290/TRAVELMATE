@@ -1,0 +1,19 @@
+name: Runner 연결 테스트
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  runner-test:
+    runs-on: [self-hosted, Linux, X64, travelmate-ci]
+
+    steps:
+      - name: Runner 연결 확인
+        run: |
+          echo "GitHub Actions Runner 연결 성공!"
+          echo "실행 사용자: $(whoami)"
+          echo "서버 이름: $(hostname)"
+          echo "현재 시간: $(date)"
