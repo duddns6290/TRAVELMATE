@@ -138,10 +138,14 @@ jobs:
           tags: ghcr.io/duddns6290/travelmate-backend:${{ github.sha }}
 
   deploy:
-    name: Tailscale SSH 연결 테스트
+    name: 홈서버 자동 배포
     needs: docker-build
     if: github.event_name == 'push' && github.ref == 'refs/heads/chore/docker-deploy'
     runs-on: ubuntu-latest
+
+    concurrency:
+      group: travelmate-production-deploy
+      cancel-in-progress: false
 
     steps:
       - name: Tailscale 연결
