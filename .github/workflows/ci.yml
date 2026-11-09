@@ -137,6 +137,16 @@ jobs:
           push: true
           tags: ghcr.io/duddns6290/travelmate-backend:${{ github.sha }}
 
+      - name: 프론트엔드 Docker 이미지 빌드 및 업로드
+        uses: docker/build-push-action@v6
+        with:
+          context: ./src/main/front
+          push: true
+          build-args: |
+            REACT_APP_NAVER_MAP_CLIENT_ID=${{ secrets.NAVER_MAP_CLIENT_ID }}
+          tags: ghcr.io/duddns6290/travelmate-frontend:${{ github.sha }}
+
+
   deploy:
     name: 홈서버 자동 배포
     needs: docker-build
